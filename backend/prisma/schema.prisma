@@ -1,13 +1,137 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  name          String
+  email         String         @unique
+  password      String
+  role          Role           @default(STUDENT)
+  points        Int            @default(0)
+  createdAt     DateTime       @default(now())
+
+  lostItems     LostItem[]
+  foundItems    FoundItem[]
+  claims        Claim[]
+  notifications Notification[]
+}
+
+enum Role {
+  STUDENT
+  SECURITY
+  ADMIN
+}
+
+model LostItem {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String
+  category    Category
+  location    String
+  dateLost    DateTime
+  imageUrl    String?
+  status      ItemStatus @default(ACTIVE)
+  createdAt   DateTime   @default(now())
+
+  userId      Int
+  user        User       @relation(fields: [userId], references: [id])
+
+  matches     Match[]
+  claims      Claim[]
+}
+
+model FoundItem {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String
+  category    Category
+  location    String
+  dateFound   DateTime
+  imageUrl    String?
+  status      ItemStatus @default(ACTIVE)
+  heldAt      String?
+  createdAt   DateTime   @default(now())
+
+  userId      Int
+  user        User       @relation(fields: [userId], references: [id])
+
+  matches     Match[]
+  claims      Claim[]
+}
+
+model Match {
+  id          Int         @id @default(autoincrement())
+  score       Float
+  status      MatchStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+
+  lostItemId  Int
+  lostItem    LostItem    @relation(fields: [lostItemId], references: [id])
+
+  foundItemId Int
+  foundItem   FoundItem   @relation(fields: [foundItemId], references: [id])
+}
+
+enum MatchStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Claim {
+  id           Int         @id @default(autoincrement())
+  question     String
+  answer       String
+  isCorrect    Boolean?
+  status       ClaimStatus @default(PENDING)
+  createdAt    DateTime    @default(now())
+
+  claimantId   Int
+  claimant     User        @relation(fields: [claimantId], references: [id])
+
+  lostItemId   Int?
+  lostItem     LostItem?   @relation(fields: [lostItemId], references: [id])
+
+  foundItemId  Int?
+  foundItem    FoundItem?  @relation(fields: [foundItemId], references: [id])
+}
+
+enum ClaimStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum Category {
+  ELECTRONICS
+  CLOTHING
+  ACCESSORIES
+  STATIONERY
+  ID_CARDS
+  SPORTS
+  OTHER
+}
+
+enum ItemStatus {
+  ACTIVE
+  MATCHED
+  RESOLVED
+  EXPIRED
+  DONATED
 }

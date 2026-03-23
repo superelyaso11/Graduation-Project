@@ -56,7 +56,7 @@ const login = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        tokem: generateToken(user.id, user.role),
+        token: generateToken(user.id, user.role),
     })
 } catch (error) {
     res.status(500).json({message: 'Server error', error: error.message})

@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
+import ReportLost from './pages/ReportLost'
 
 const App = () => {
     return (
@@ -21,6 +22,12 @@ const App = () => {
                         <ProtectedRoute>
                             <Dashboard />
                         </ProtectedRoute>
+                    } />
+
+                    <Route path='/report-lost' element={
+                        <protectedRoute>
+                            <ReportLost />
+                        </protectedRoute>
                     } />
 
                     {/* Redirect root to login */}

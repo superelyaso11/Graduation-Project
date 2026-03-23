@@ -1,15 +1,6 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-
-// Sidebar navigation items
-const navItems = [
-  { icon: '⊞', label: 'Dashboard', active: true },
-  { icon: '⊙', label: 'Report Lost', active: false },
-  { icon: '◎', label: 'Report Found', active: false },
-  { icon: '⬡', label: 'My Items', active: false },
-  { icon: '🔔', label: 'Notifications', active: false },
-]
 
 // Stat cards data
 const stats = [
@@ -21,6 +12,15 @@ const stats = [
 // Recent activity placeholder
 const activities = [
   { icon: '✓', title: 'Welcome to Lost & Found!', desc: 'Start by reporting a lost or found item', time: 'Just now' },
+]
+
+// Sidebar navigation items
+const navItems = [
+  { icon: '⊞', label: 'Dashboard', path: '/dashboard'},
+  { icon: '⊙', label: 'Report Lost', path: '/report-lost' },
+  { icon: '◎', label: 'Report Found', path: '/report-found' },
+  { icon: '⬡', label: 'My Items', path: '/my-items' },
+  { icon: '🔔', label: 'Notifications', path: '/notifications' },
 ]
 
 const Dashboard= () => {
@@ -53,14 +53,15 @@ const Dashboard= () => {
         {/* Nav Items */}
         <nav style={s.nav}>
           {navItems.map((item) => (
-            <button
+            <Link
               key={item.label}
+              to={item.path}
               style={activeNav === item.label ? { ...s.navItem, ...s.navItemActive } : s.navItem}
               onClick={() => setActiveNav(item.label)}
             >
               <span style={s.navIcon}>{item.icon}</span>
               <span>{item.label}</span>
-            </button>
+            </Link>
           ))}
         </nav>
       </aside>

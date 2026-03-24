@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import {useNavigate, Link} from 'react-router-dom'
+import { Link} from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
 
@@ -23,7 +23,6 @@ const navItems = [
 
 const ReportFound = () => {
     const { user } = useAuth()
-    const navigate = useNavigate()
 
   const [items, setItems] = useState([])               // all lost items
   const [loading, setLoading] = useState(true)         // loading state
@@ -38,6 +37,7 @@ const ReportFound = () => {
 
   useEffect(() => {
     fetchItems()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category])
 
   const fetchItems = async () => {

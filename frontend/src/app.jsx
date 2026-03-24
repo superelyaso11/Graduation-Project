@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import ReportLost from './pages/ReportLost'
+import ReportFound from './pages/ReportFound'
 
 const App = () => {
     return (
@@ -25,9 +26,15 @@ const App = () => {
                     } />
 
                     <Route path='/report-lost' element={
-                        <protectedRoute>
+                        <ProtectedRoute>
                             <ReportLost />
-                        </protectedRoute>
+                        </ProtectedRoute>
+                    } />
+
+                    <Route path='/report-found' element={
+                        <ProtectedRoute>
+                            <ReportFound />
+                        </ProtectedRoute>
                     } />
 
                     {/* Redirect root to login */}

@@ -18,7 +18,7 @@ const activities = [
 const navItems = [
   { icon: '⊞', label: 'Dashboard', path: '/dashboard'},
   { icon: '⊙', label: 'Report Lost', path: '/report-lost' },
-  { icon: '◎', label: 'Report Found', path: '/report-found' },
+  { icon: '◎', label: 'Browse Lost Items', path: '/report-found' },
   { icon: '⬡', label: 'My Items', path: '/my-items' },
   { icon: '🔔', label: 'Notifications', path: '/notifications' },
 ]

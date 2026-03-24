@@ -90,5 +90,73 @@ const getMyFoundItems = async (req, res) => {
         res.status(500).json({message: 'Server error', error: error.message})
     }
 }
+// POST /api/found-items/match/:lostItemId
+// Creates a found report directly linked to a lost item and triggers matching
+const reportFoundForLostItem = async (req, res) => {
+  const { lostItemId } = req.params                    // the lost item being matched
+  const { location, dateFound, description, heldAt } = req.body
+  const userId = req.user.id                           // logged-in user
 
-module.exports = { createFoundItem, getFoundItems, getFoundItemById, getMyFoundItems}
+  try {
+    // get the lost item to copy its details
+    const lostItem = await prisma.lostItem.findUnique({
+      where: { id: parseInt(lostItemId) }
+    })
+
+    if (!lostItem) {
+      return res.status(404).json({ message: 'Lost item not found' })
+    }
+
+    if (lostItem.userId === userId) {                  // can't claim your own item
+      return res.status(400).json({ message: 'You cannot report finding your own item' })
+    }
+
+    // create the found item using the lost item's details
+    const foundItem = await prisma.foundItem.create({
+      data: {
+        title: lostItem.title,                         // copy title from lost item
+        description: description || lostItem.description,
+        category: lostItem.category,                   // copy category
+        location,
+        dateFound: new Date(dateFound),
+        heldAt: heldAt || null,
+        userId,
+      },
+    })
+
+    // create a match between the two items with high confidence score
+    const match = await prisma.match.create({
+      data: {
+        lostItemId: parseInt(lostItemId),
+        foundItemId: foundItem.id,
+        score: 0.95,                                   // high score since user explicitly matched
+        status: 'PENDING',
+      },
+    })
+
+    // update both items status to MATCHED
+    await prisma.lostItem.update({
+      where: { id: parseInt(lostItemId) },
+      data: { status: 'MATCHED' },
+    })
+
+    await prisma.foundItem.update({
+      where: { id: foundItem.id },
+      data: { status: 'MATCHED' },
+    })
+
+    // create notification for the lost item owner
+    await prisma.notification.create({
+      data: {
+        userId: lostItem.userId,                       // notify the person who lost the item
+        message: `Someone found your ${lostItem.title}! Check your matches.`,
+      },
+    })
+
+    res.status(201).json({ foundItem, match })
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message })
+  }
+}
+
+module.exports = { createFoundItem, getFoundItems, getFoundItemById, getMyFoundItems, reportFoundForLostItem}

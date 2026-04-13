@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import api from '../api/axios'
+import Sidebar from '../components/Sidebar'
+import Navbar from '../components/Navbar'
 
 // category options matching the backend enum exactly
 const categories = [
@@ -64,41 +66,11 @@ const ReportLost = () => {
     <div style={s.layout}>
 
       {/* Sidebar */}
-      <aside style={s.sidebar}>
-        <div style={s.sidebarLogo}>
-          <div style={s.logoIcon}>⬡</div>
-          <span style={s.logoText}>Lost & Found</span>
-        </div>
-        <nav style={s.nav}>
-          {[
-            { icon: '⊞', label: 'Dashboard', path: '/dashboard' },
-            { icon: '⊙', label: 'Report Lost', path: '/report-lost' },
-            { icon: '◎', label: 'Report Found', path: '/report-found' },
-            { icon: '⬡', label: 'My Items', path: '/my-items' },
-            { icon: '🔔', label: 'Notifications', path: '/notifications' },
-          ].map((item) => (
-            <Link
-              key={item.label}
-              to={item.path}
-              style={item.path === '/report-lost'
-                ? { ...s.navItem, ...s.navItemActive }  // active state for current page
-                : s.navItem}
-            >
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
-      </aside>
+      <Sidebar />
 
       {/* Main Content */}
       <main style={s.main}>
-        <header style={s.topbar}>
-          <div>
-            <h1 style={s.pageTitle}>Report Lost Item</h1>
-            <p style={s.pageSubtitle}>Fill in the details of the item you lost</p>
-          </div>
-        </header>
+        <Navbar title='Report Lost Item' subtitle='Fill in the details of the item you lost' />
 
         <div style={s.formWrap}>
           <div style={s.card}>
@@ -220,17 +192,7 @@ const ReportLost = () => {
 
 const s = {
   layout: { display: 'flex', minHeight: '100vh', backgroundColor: '#0F172A' },
-  sidebar: { width: '260px', backgroundColor: '#1E293B', borderRight: '1px solid #334155', display: 'flex', flexDirection: 'column', padding: '1.5rem 1rem', flexShrink: 0 },
-  sidebarLogo: { display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem', marginBottom: '2rem' },
-  logoIcon: { width: '36px', height: '36px', backgroundColor: '#2563EB', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', color: 'white' },
-  logoText: { fontSize: '1rem', fontWeight: '700', color: '#F8FAFC' },
-  nav: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
-  navItem: { display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: '10px', color: '#94A3B8', fontSize: '0.9rem', fontWeight: '500', cursor: 'pointer', textDecoration: 'none', transition: 'all 0.2s' },
-  navItemActive: { backgroundColor: '#2563EB', color: '#F8FAFC' },
   main: { flex: 1, display: 'flex', flexDirection: 'column' },
-  topbar: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 2rem', borderBottom: '1px solid #334155', backgroundColor: '#1E293B' },
-  pageTitle: { fontSize: '1.5rem', fontWeight: '700', color: '#F8FAFC', marginBottom: '0.1rem' },
-  pageSubtitle: { fontSize: '0.875rem', color: '#94A3B8' },
   formWrap: { padding: '2rem', maxWidth: '700px', width: '100%' },
   card: { backgroundColor: '#1E293B', border: '1px solid #334155', borderRadius: '16px', padding: '2rem' },
   successBox: { backgroundColor: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', color: '#6EE7B7', padding: '0.75rem 1rem', borderRadius: '8px', fontSize: '0.875rem', marginBottom: '1.25rem' },

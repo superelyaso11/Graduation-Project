@@ -1,7 +1,8 @@
 import {useState, useEffect} from 'react'
-import { Link} from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import api from '../api/axios'
+import Sidebar from '../components/Sidebar'
+import Navbar from '../components/Navbar'
 
 const CATEGORIES = [
     {value: 'ELECTRONICS', label: 'Electronics'},
@@ -11,14 +12,6 @@ const CATEGORIES = [
     {value: 'ID_CARDS', label: 'ID Cards'},
     {value: 'SPORTS', label: 'Sports Equipment'},
     {value: 'OTHER', label: 'Other'},
-]
-
-const navItems = [
-  { icon: '⊞', label: 'Dashboard', path: '/dashboard' },
-  { icon: '⊙', label: 'Report Lost', path: '/report-lost' },
-  { icon: '◎', label: 'Report Found', path: '/report-found' },
-  { icon: '⬡', label: 'My Items', path: '/my-items' },
-  { icon: '🔔', label: 'Notifications', path: '/notifications' },
 ]
 
 const ReportFound = () => {
@@ -109,32 +102,11 @@ const ReportFound = () => {
     <div style={s.layout}>
 
       {/* Sidebar */}
-      <aside style={s.sidebar}>
-        <div style={s.sidebarLogo}>
-          <div style={s.logoIcon}>⬡</div>
-          <span style={s.logoText}>Lost & Found</span>
-        </div>
-        <nav style={s.nav}>
-          {navItems.map((item) => (
-            <Link key={item.label} to={item.path}
-              style={item.path === '/report-found'
-                ? { ...s.navItem, ...s.navItemActive }
-                : s.navItem}>
-              <span>{item.icon}</span>
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
-      </aside>
+      <Sidebar />
 
       {/* Main */}
       <main style={s.main}>
-        <header style={s.topbar}>
-          <div>
-            <h1 style={s.pageTitle}>Browse Lost Items</h1>
-            <p style={s.pageSubtitle}>Found something? Help reunite it with its owner</p>
-          </div>
-        </header>
+        <Navbar title='Browse Lost Items' subtitle='Found something? Help reunite it with its owner' />
 
         <div style={s.content}>
 
@@ -301,17 +273,7 @@ const ReportFound = () => {
 
 const s = {
   layout: { display: 'flex', minHeight: '100vh', backgroundColor: '#0F172A' },
-  sidebar: { width: '260px', backgroundColor: '#1E293B', borderRight: '1px solid #334155', display: 'flex', flexDirection: 'column', padding: '1.5rem 1rem', flexShrink: 0 },
-  sidebarLogo: { display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem', marginBottom: '2rem' },
-  logoIcon: { width: '36px', height: '36px', backgroundColor: '#2563EB', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', color: 'white' },
-  logoText: { fontSize: '1rem', fontWeight: '700', color: '#F8FAFC' },
-  nav: { display: 'flex', flexDirection: 'column', gap: '0.25rem' },
-  navItem: { display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem', borderRadius: '10px', color: '#94A3B8', fontSize: '0.9rem', fontWeight: '500', cursor: 'pointer', textDecoration: 'none', transition: 'all 0.2s' },
-  navItemActive: { backgroundColor: '#2563EB', color: '#F8FAFC' },
   main: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'auto' },
-  topbar: { display: 'flex', alignItems: 'center', padding: '1.25rem 2rem', borderBottom: '1px solid #334155', backgroundColor: '#1E293B' },
-  pageTitle: { fontSize: '1.5rem', fontWeight: '700', color: '#F8FAFC', marginBottom: '0.1rem' },
-  pageSubtitle: { fontSize: '0.875rem', color: '#94A3B8' },
   content: { padding: '2rem' },
   successBox: { backgroundColor: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', color: '#6EE7B7', padding: '0.75rem 1rem', borderRadius: '8px', fontSize: '0.875rem', marginBottom: '1.25rem' },
   filterBar: { display: 'flex', gap: '1rem', marginBottom: '1rem' },

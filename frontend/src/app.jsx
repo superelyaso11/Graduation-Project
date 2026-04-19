@@ -8,6 +8,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import ReportLost from './pages/ReportLost'
 import ReportFound from './pages/ReportFound'
+import MyItems from './pages/MyItems'
 
 const App = () => {
     return (
@@ -34,6 +35,12 @@ const App = () => {
                     <Route path='/report-found' element={
                         <ProtectedRoute>
                             <ReportFound />
+                        </ProtectedRoute>
+                    } />
+
+                    <Route path='/my-items' element={
+                        <ProtectedRoute>
+                            <MyItems />
                         </ProtectedRoute>
                     } />
 

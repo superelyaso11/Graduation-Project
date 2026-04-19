@@ -1,4 +1,5 @@
 const {PrismaClient} = require('@prisma/client')
+const {matchNewLostItem} = require('../services/matching.service')
 
 const prisma = new PrismaClient()
 
@@ -24,6 +25,8 @@ const createLostItem = async (req, res) => {
                 userId, // link to the logged-in user
             },
         })
+
+        matchNewLostItem(lostItem).catch(err => console.error('Background matching error:', err.message))
 
         res.status(201).json(lostItem) // 201 = Created, return the new item
     } catch (error) {

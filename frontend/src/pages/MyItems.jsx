@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
 
 const MyItems = () => {
-  const { user } = useAuth();
+  useAuth();
   const [lostItems, setLostItems] = useState([]); //user's lost item reports
   const [foundItems, setFoundItems] = useState([]); //user's found item reports
   const [incomingClaims, setIncomingClaims] = useState([]); //claims on user's found items

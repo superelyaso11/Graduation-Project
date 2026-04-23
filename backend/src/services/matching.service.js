@@ -39,7 +39,7 @@ const calculateMatchScore = (lostItem, foundItem) => {
   );
   const dateScore = dateSimilarity(lostItem.date, foundItem.date);
 
-  const score = locationScore * 0.6 + dateScore * 0.4; // weight location more than date
+  const score = (locationScore * 0.6) + (dateScore * 0.4); // weight location more than date
 
   return Math.round(score * 100) / 100; // round to 2 decimal places
 };

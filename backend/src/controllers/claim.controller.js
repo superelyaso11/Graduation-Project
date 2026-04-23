@@ -140,39 +140,44 @@ const approveClaim = async (req, res) => {
     }
 
     //approve the claim
-    const updated = await prisma.claim.update({
-      where: { id: parseInt(id) },
-      data: { status: 'APPROVED', isCorrect: true },
-    });
-
-    //update item statuses to RESOLVED
-    if (claim.foundItemId) {
-      await prisma.foundItem.update({
+    await prisma.$transaction([
+      // 1. Approve the Claim (ClaimStatus)
+      prisma.claim.update({
+        where: { id: parseInt(id) },
+        data: { status: 'APPROVED', isCorrect: true },
+      }),
+      // 2. Accept the Match (MatchStatus)
+      prisma.match.updateMany({
+        where: {
+          lostItemId: claim.lostItemId,
+          foundItemId: claim.foundItemId,
+        },
+        data: { status: 'ACCEPTED' },
+      }),
+      // 3. Resolve the Items (ItemStatus)
+      prisma.foundItem.update({
         where: { id: claim.foundItemId },
         data: { status: 'RESOLVED' },
-      });
-    }
-
-    if (claim.lostItemId) {
-      await prisma.lostItem.update({
+      }),
+      prisma.lostItem.update({
         where: { id: claim.lostItemId },
         data: { status: 'RESOLVED' },
-      });
-    }
+      }),
 
-    //reward the claimant with points
-    await prisma.user.update({
+      //reward the claimant with points
+      await prisma.user.update({
       where: { id: claim.claimantId },
       data: { points: { increment: 10 } }, //+10 points for successful claim
-    });
+      }),
 
-    //notify the claimant that thier claim was approved
-    await prisma.notification.create({
+      //notify the claimant that thier claim was approved
+      await prisma.notification.create({
       data: {
         userId: claim.claimantId,
         message: `Your claim was approved! Contact the finder to retrieve your item.`,
       },
-    });
+    }),
+  ]);
 
     res.json(updated);
   } catch (error) {

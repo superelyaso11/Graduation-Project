@@ -153,6 +153,13 @@ const approveClaim = async (req, res) => {
       });
     }
 
+    if (claim.lostItemId) {
+      await prisma.lostItem.update({
+        where: { id: claim.lostItemId },
+        data: { status: 'RESOLVED' },
+      });
+    }
+
     //reward the claimant with points
     await prisma.user.update({
       where: { id: claim.claimantId },

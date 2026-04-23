@@ -1,55 +1,77 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
-import ProtectedRoute from './components/ProtectedRoute'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 //pages
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Dashboard from './pages/Dashboard'
-import ReportLost from './pages/ReportLost'
-import ReportFound from './pages/ReportFound'
-import MyItems from './pages/MyItems'
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
+import ReportLost from './pages/ReportLost';
+import ReportFound from './pages/ReportFound';
+import BrowseItems from './pages/BrowseItems';
+import MyItems from './pages/MyItems';
 
 const App = () => {
-    return (
-        <AuthProvider>
-            <BrowserRouter>
-                <Routes>
-                    {/* Public routes */}
-                    <Route path='/login' element={<Login />} />
-                    <Route path='/register' element={<Register />} />
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-                    {/* Protected routes - must be logged in */}
-                    <Route path='/dashboard' element={
-                        <ProtectedRoute>
-                            <Dashboard />
-                        </ProtectedRoute>
-                    } />
+          {/* Protected routes - must be logged in */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
 
-                    <Route path='/report-lost' element={
-                        <ProtectedRoute>
-                            <ReportLost />
-                        </ProtectedRoute>
-                    } />
+          <Route
+            path="/report-lost"
+            element={
+              <ProtectedRoute>
+                <ReportLost />
+              </ProtectedRoute>
+            }
+          />
 
-                    <Route path='/report-found' element={
-                        <ProtectedRoute>
-                            <ReportFound />
-                        </ProtectedRoute>
-                    } />
+          <Route
+            path="/report-found"
+            element={
+              <ProtectedRoute>
+                <ReportFound />
+              </ProtectedRoute>
+            }
+          />
 
-                    <Route path='/my-items' element={
-                        <ProtectedRoute>
-                            <MyItems />
-                        </ProtectedRoute>
-                    } />
+          <Route
+            path="/browse-items"
+            element={
+              <ProtectedRoute>
+                <BrowseItems />
+              </ProtectedRoute>
+            }
+          />
 
-                    {/* Redirect root to login */}
-                    <Route path='/' element={<Navigate to='/login' />} />
-                </Routes>
-            </BrowserRouter>
-        </AuthProvider>
-    )
-}
+          <Route
+            path="/my-items"
+            element={
+              <ProtectedRoute>
+                <MyItems />
+              </ProtectedRoute>
+            }
+          />
 
-export default App
+          {/* Redirect root to login */}
+          <Route path="/" element={<Navigate to="/login" />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
+};
+
+export default App;

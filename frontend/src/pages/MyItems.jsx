@@ -11,6 +11,7 @@ const MyItems = () => {
   const [incomingClaims, setIncomingClaims] = useState([]); //claims on user's found items
   const [myClaims, setMyClaims] = useState([]); //claims user submitted
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false)  //to trigger data refresh after claim submission
   const [activeTab, setActiveTab] = useState('lost'); //active tab
   const [claimModal, setClaimModal] = useState(false); //claim submission modal
   const [selectedMatch, setSelectedMatch] = useState(null); //match user is claiming
@@ -20,11 +21,15 @@ const MyItems = () => {
   const [successMsg, setSuccessMsg] = useState(''); //success message after claim submission
 
   useEffect(() => {
-    fetchAll();
+    fetchAll(false);
   }, []);
 
   const fetchAll = async () => {
-    setLoading(true);
+    if (isRefresh) {
+      setRefreshing(true)                              // silent refresh — no loading screen
+    } else {
+      setLoading(true)                                 // initial load only
+    }
     try {
       const [lost, found, incoming, mine] = await Promise.all([
         api.get('/lost-items/my'), //my lost items
@@ -99,7 +104,7 @@ const MyItems = () => {
       await api.patch(`/claims/${claimId}/approve`);
       setSuccessMsg('✅ Claim approved! Item marked as resolved.');
       setTimeout(() => setSuccessMsg(''), 4000);
-      fetchAll();
+      fetchAll(true);
     } catch (err) {
       console.error('Failed to approve claim:', err);
     }
@@ -111,7 +116,7 @@ const MyItems = () => {
       await api.patch(`/claims/${claimId}/reject`);
       setSuccessMsg('❌ Claim rejected.');
       setTimeout(() => setSuccessMsg(''), 4000);
-      fetchAll();
+      fetchAll(true);
     } catch (err) {
       console.error('Failed to reject claim:', err);
     }

@@ -165,13 +165,13 @@ const approveClaim = async (req, res) => {
       }),
 
       //reward the claimant with points
-      await prisma.user.update({
+      prisma.user.update({
       where: { id: claim.claimantId },
       data: { points: { increment: 10 } }, //+10 points for successful claim
       }),
 
       //notify the claimant that thier claim was approved
-      await prisma.notification.create({
+      prisma.notification.create({
       data: {
         userId: claim.claimantId,
         message: `Your claim was approved! Contact the finder to retrieve your item.`,

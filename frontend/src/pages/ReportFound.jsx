@@ -8,14 +8,14 @@ const CATEGORIES = [
   { value: 'ELECTRONICS', label: 'Electronics' },
   { value: 'CLOTHING', label: 'Clothing & Bags' },
   { value: 'ACCESSORIES', label: 'Accessories' },
-  { value: 'STATIONARY', label: 'Stationary' },
+  { value: 'STATIONERY', label: 'Stationary' },
   { value: 'ID_CARDS', label: 'ID Cards' },
   { value: 'SPORTS', label: 'Sports' },
-  { value: 'OTHERS', label: 'Others' },
+  { value: 'OTHER', label: 'Others' },
 ];
 
 const ReportFound = () => {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -28,7 +28,7 @@ const ReportFound = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState('false');
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

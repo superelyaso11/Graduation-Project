@@ -14,7 +14,7 @@ const CATEGORIES = [
     {value: 'OTHER', label: 'Other'},
 ]
 
-const ReportFound = () => {
+const BrowseItems = () => {
     const { user } = useAuth()
 
   const [items, setItems] = useState([])               // all lost items
@@ -308,4 +308,4 @@ const s = {
   submitBtn: { backgroundColor: '#2563EB', color: 'white', border: 'none', borderRadius: '10px', padding: '0.75rem 1.5rem', fontSize: '0.95rem', fontWeight: '600', cursor: 'pointer', transition: 'background-color 0.2s', fontFamily: 'Sora, sans-serif' },
 }
 
-export default ReportFound
+export default BrowseItems

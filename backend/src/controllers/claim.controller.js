@@ -132,6 +132,11 @@ const approveClaim = async (req, res) => {
       return res.status(404).json({ message: 'Claim not found' });
     }
 
+    // prevent double approval
+    if (claim.status === 'APPROVED') {
+      return res.status(400).json({ message: 'Claim already approved' })
+    }
+    
     //only teh finder can approve
     if (claim.foundItem?.userId !== userId) {
       return res
@@ -179,7 +184,7 @@ const approveClaim = async (req, res) => {
     }),
   ]);
 
-    res.json(updated);
+    res.json({ message: 'Claim approved successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }

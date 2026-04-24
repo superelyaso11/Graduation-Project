@@ -11,7 +11,6 @@ const MyItems = () => {
   const [incomingClaims, setIncomingClaims] = useState([]); //claims on user's found items
   const [myClaims, setMyClaims] = useState([]); //claims user submitted
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false)  //to trigger data refresh after claim submission
   const [activeTab, setActiveTab] = useState('lost'); //active tab
   const [claimModal, setClaimModal] = useState(false); //claim submission modal
   const [selectedMatch, setSelectedMatch] = useState(null); //match user is claiming
@@ -21,15 +20,11 @@ const MyItems = () => {
   const [successMsg, setSuccessMsg] = useState(''); //success message after claim submission
 
   useEffect(() => {
-    fetchAll(false);
+    fetchAll();
   }, []);
 
   const fetchAll = async () => {
-    if (isRefresh) {
-      setRefreshing(true)                              // silent refresh — no loading screen
-    } else {
-      setLoading(true)                                 // initial load only
-    }
+    setLoading(true);
     try {
       const [lost, found, incoming, mine] = await Promise.all([
         api.get('/lost-items/my'), //my lost items
@@ -42,7 +37,7 @@ const MyItems = () => {
       setIncomingClaims(incoming.data);
       setMyClaims(mine.data);
     } catch (err) {
-      console.error('Failed to fetch data:', err);
+        console.error('Failed to fetch items', err) 
     } finally {
       setLoading(false);
     }
@@ -102,9 +97,14 @@ const MyItems = () => {
   const handleApprove = async (claimId) => {
     try {
       await api.patch(`/claims/${claimId}/approve`);
+
+      // update the claim status directly in state — no refetch needed
+      setIncomingClaims(prev => prev.map(c =>
+        c.id === claimId ? { ...c, status: 'APPROVED' } : c
+      ));
+
       setSuccessMsg('✅ Claim approved! Item marked as resolved.');
       setTimeout(() => setSuccessMsg(''), 4000);
-      fetchAll(true);
     } catch (err) {
       console.error('Failed to approve claim:', err);
     }
@@ -114,9 +114,14 @@ const MyItems = () => {
   const handleReject = async (claimId) => {
     try {
       await api.patch(`/claims/${claimId}/reject`);
+      
+      // update the claim status directly in state — no refetch needed
+      setIncomingClaims(prev => prev.map(c =>
+      c.id === claimId ? { ...c, status: 'REJECTED' } : c
+      ));
+
       setSuccessMsg('❌ Claim rejected.');
       setTimeout(() => setSuccessMsg(''), 4000);
-      fetchAll(true);
     } catch (err) {
       console.error('Failed to reject claim:', err);
     }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import LocationDropdown from '../components/LocationDropdown';
 
 const CATEGORIES = [
   { value: 'ELECTRONICS', label: 'Electronics' },
@@ -123,15 +124,12 @@ const ReportFound = () => {
 
                 <div style={{ ...s.field, flex: 1 }}>
                   <label style={s.label}>Location Found</label>
-                  <input
-                    style={s.input}
-                    type="text"
-                    name="location"
-                    placeholder="e.g. Cafeteria, 2nd Floor"
+                  <LocationDropdown
                     value={formData.location}
-                    onChange={handleChange}
-                    onFocus={focusStyle}
-                    onBlur={blurStyle}
+                    onChange={(val) =>
+                      setFormData({ ...formData, location: val })
+                    }
+                    placeholder="Search campus locations..."
                   />
                 </div>
               </div>

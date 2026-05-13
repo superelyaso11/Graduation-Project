@@ -30,20 +30,12 @@ const LocationDropdown = ({
 }) => {
   const [search, setSearch] = useState(value || ''); //search input value
   const [open, setOpen] = useState(false); //dropdown open/close
-  const [filtered, setFiltered] = useState(LOCATIONS); //filtered locations list
   const wrapRef = useRef(null); //ref to detect outside clicks
-
-  //filter locations as user types
-  useEffect(() => {
-    const q = search.toLowerCase().trim();
-    if (!q) {
-      setFiltered(LOCATIONS); //show all if search is empty
-    } else {
-      setFiltered(
-        LOCATIONS.filter((loc) => loc.toLowerCase().includes(q)) //case-insensitive search
-      );
-    }
-  }, [search]);
+  const filtered = search.trim()
+    ? LOCATIONS.filter((loc) =>
+        loc.toLowerCase().includes(search.toLowerCase())
+      )
+    : LOCATIONS; //compute filtered list directly
 
   //close dropdown when clicking outside
   useEffect(() => {

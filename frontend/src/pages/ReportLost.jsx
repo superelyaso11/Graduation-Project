@@ -6,17 +6,6 @@ import Navbar from '../components/Navbar';
 import LocationDropdown from '../components/LocationDropdown';
 import CategoryDropdown from '../components/CategoryDropdown';
 
-// category options matching the backend enum exactly
-const categories = [
-  { value: 'ELECTRONICS', label: 'Electronics' },
-  { value: 'CLOTHING', label: 'Clothing' },
-  { value: 'ACCESSORIES', label: 'Accessories' },
-  { value: 'STATIONERY', label: 'Stationery' },
-  { value: 'ID_CARDS', label: 'ID Cards' },
-  { value: 'SPORTS', label: 'Sports Equipment' },
-  { value: 'OTHER', label: 'Other' },
-];
-
 const ReportLost = () => {
   const navigate = useNavigate();
 
@@ -262,6 +251,7 @@ const s = {
     outline: 'none',
     transition: 'border-color 0.2s',
     fontFamily: 'Sora, sans-serif',
+    position: 'relative',
   },
   btnRow: {
     display: 'flex',

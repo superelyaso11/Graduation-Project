@@ -6,16 +6,6 @@ import Navbar from '../components/Navbar';
 import LocationDropdown from '../components/LocationDropdown';
 import CategoryDropdown from '../components/CategoryDropdown';
 
-const CATEGORIES = [
-  { value: 'ELECTRONICS', label: 'Electronics' },
-  { value: 'CLOTHING', label: 'Clothing & Bags' },
-  { value: 'ACCESSORIES', label: 'Accessories' },
-  { value: 'STATIONERY', label: 'Stationery' },
-  { value: 'ID_CARDS', label: 'ID Cards' },
-  { value: 'SPORTS', label: 'Sports Equipment' },
-  { value: 'OTHER', label: 'Other' },
-];
-
 const BrowseItems = () => {
   const { user } = useAuth();
 
@@ -488,6 +478,7 @@ const s = {
     outline: 'none',
     transition: 'border-color 0.2s',
     fontFamily: 'Sora, sans-serif',
+    position: 'relative',
   },
   modalBtns: {
     display: 'flex',

@@ -3,20 +3,20 @@
 
 /* CSS Variables — single source of truth for all colors */
 :root {
-  --bg-primary: #0F172A;        /* dark navy background */
-  --bg-secondary: #1E293B;      /* card background */
-  --bg-tertiary: #0D1B2E;       /* input background */
-  --blue-primary: #2563EB;      /* main brand blue */
-  --blue-hover: #1D4ED8;        /* darker blue on hover */
-  --blue-subtle: #1E3A5F;       /* subtle blue for icons bg */
-  --text-primary: #F8FAFC;      /* main white text */
-  --text-secondary: #94A3B8;    /* muted gray text */
-  --border-color: #334155;      /* subtle border */
-  --success: #10B981;           /* green for positive stats */
-  --error: #EF4444;             /* red for errors */
-  --border-radius-card: 16px;   /* card border radius */
-  --border-radius-input: 10px;  /* input border radius */
-  --border-radius-btn: 10px;    /* button border radius */
+  --bg-primary: #0f172a; /* dark navy background */
+  --bg-secondary: #1e293b; /* card background */
+  --bg-tertiary: #0d1b2e; /* input background */
+  --blue-primary: #2563eb; /* main brand blue */
+  --blue-hover: #1d4ed8; /* darker blue on hover */
+  --blue-subtle: #1e3a5f; /* subtle blue for icons bg */
+  --text-primary: #f8fafc; /* main white text */
+  --text-secondary: #94a3b8; /* muted gray text */
+  --border-color: #334155; /* subtle border */
+  --success: #10b981; /* green for positive stats */
+  --error: #ef4444; /* red for errors */
+  --border-radius-card: 16px; /* card border radius */
+  --border-radius-input: 10px; /* input border radius */
+  --border-radius-btn: 10px; /* button border radius */
 }
 
 /* Reset */
@@ -27,13 +27,33 @@
 }
 
 body {
-  font-family: 'Sora', sans-serif;              /* apply font globally */
+  font-family: 'Sora', sans-serif; /* apply font globally */
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
 }
 
 /* Scrollbar styling */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+/* Make calendar icon cover full input so clicking anywhere opens calendar */
+input[type='date']::-webkit-calendar-picker-indicator {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}

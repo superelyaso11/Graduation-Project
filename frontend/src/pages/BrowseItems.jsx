@@ -32,6 +32,7 @@ const BrowseItems = () => {
   const [modalError, setModalError] = useState('');
   const [modalLoading, setModalLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
     fetchItems();
@@ -256,6 +257,7 @@ const BrowseItems = () => {
                 <input
                   style={s.input}
                   type="date"
+                  max={today}
                   value={modalData.dateFound}
                   onChange={(e) =>
                     setModalData({ ...modalData, dateFound: e.target.value })

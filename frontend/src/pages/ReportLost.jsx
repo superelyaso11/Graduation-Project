@@ -30,6 +30,7 @@ const ReportLost = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const today = new Date().toISOString().split('T')[0];
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -147,6 +148,7 @@ const ReportLost = () => {
                   style={s.input}
                   type="date"
                   name="dateLost"
+                  max={today}
                   value={formData.dateLost}
                   onChange={handleChange}
                   onFocus={focusStyle}

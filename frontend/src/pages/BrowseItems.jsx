@@ -4,6 +4,7 @@ import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import LocationDropdown from '../components/LocationDropdown';
+import CategoryDropdown from '../components/CategoryDropdown';
 
 const CATEGORIES = [
   { value: 'ELECTRONICS', label: 'Electronics' },
@@ -141,17 +142,12 @@ const BrowseItems = () => {
               onFocus={focusStyle}
               onBlur={blurStyle}
             />
-            <select
-              style={{ ...s.filterSelect, cursor: 'pointer' }}
+            <CategoryDropdown
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => setCategory(val)}
+              placeholder="All Categories"
+              showAll={true} //show all categories option
+            />
           </div>
 
           {/* Items count */}

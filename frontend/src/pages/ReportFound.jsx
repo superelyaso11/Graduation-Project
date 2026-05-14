@@ -4,6 +4,7 @@ import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import LocationDropdown from '../components/LocationDropdown';
+import CategoryDropdown from '../components/CategoryDropdown';
 
 const CATEGORIES = [
   { value: 'ELECTRONICS', label: 'Electronics' },
@@ -108,19 +109,13 @@ const ReportFound = () => {
               <div style={s.row}>
                 <div style={{ ...s.field, flex: 1 }}>
                   <label style={s.label}>Category</label>
-                  <select
-                    style={{ ...s.input, cursor: 'pointer' }}
-                    name="category"
+                  <CategoryDropdown
                     value={formData.category}
-                    onChange={handleChange}
-                  >
-                    <option value="">Select a category</option>
-                    {CATEGORIES.map((c) => (
-                      <option key={c.value} value={c.value}>
-                        {c.label}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(val) =>
+                      setFormData({ ...formData, category: val })
+                    }
+                    placeholder="Select a category"
+                  />
                 </div>
 
                 <div style={{ ...s.field, flex: 1 }}>

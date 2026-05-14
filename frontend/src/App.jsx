@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 //pages
@@ -13,64 +12,62 @@ import MyItems from './pages/MyItems';
 
 const App = () => {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Public routes */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+    <BrowserRouter>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-          {/* Protected routes - must be logged in */}
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+        {/* Protected routes - must be logged in */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-          <Route
-            path="/report-lost"
-            element={
-              <ProtectedRoute>
-                <ReportLost />
-              </ProtectedRoute>
-            }
-          />
+        <Route
+          path="/report-lost"
+          element={
+            <ProtectedRoute>
+              <ReportLost />
+            </ProtectedRoute>
+          }
+        />
 
-          <Route
-            path="/report-found"
-            element={
-              <ProtectedRoute>
-                <ReportFound />
-              </ProtectedRoute>
-            }
-          />
+        <Route
+          path="/report-found"
+          element={
+            <ProtectedRoute>
+              <ReportFound />
+            </ProtectedRoute>
+          }
+        />
 
-          <Route
-            path="/browse-items"
-            element={
-              <ProtectedRoute>
-                <BrowseItems />
-              </ProtectedRoute>
-            }
-          />
+        <Route
+          path="/browse-items"
+          element={
+            <ProtectedRoute>
+              <BrowseItems />
+            </ProtectedRoute>
+          }
+        />
 
-          <Route
-            path="/my-items"
-            element={
-              <ProtectedRoute>
-                <MyItems />
-              </ProtectedRoute>
-            }
-          />
+        <Route
+          path="/my-items"
+          element={
+            <ProtectedRoute>
+              <MyItems />
+            </ProtectedRoute>
+          }
+        />
 
-          {/* Redirect root to login */}
-          <Route path="/" element={<Navigate to="/login" />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+        {/* Redirect root to login */}
+        <Route path="/" element={<Navigate to="/login" />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 

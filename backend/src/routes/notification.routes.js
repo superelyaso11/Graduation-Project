@@ -11,7 +11,6 @@ router.get('/', protect, async (req, res) => {
     const notifications = await prisma.notification.findMany({
       where: { userId: req.user.id },
       orderBy: { createdAt: 'desc' },
-      take: 20, //limit to last 20
     });
     res.json(notifications);
   } catch (err) {

@@ -11,9 +11,18 @@ export const SocketProvider = ({ children }) => {
   const [connected, setConnected] = useState(false); //connection status
 
   useEffect(() => {
-    if (!user) return; //don't connect if not logged in
+    if (!user) {
+      //don't connect if not logged in
+      if (socket) {
+        socket.disconnect(); //disconnect if user logs out
+        setSocket(null);
+        setConnected(false);
+      }
+    }
 
     const token = localStorage.getItem('token'); //get JWT token
+
+    if (!token) return;
 
     //create socket  connection with token for authentication
     const newSocket = io(
@@ -22,6 +31,8 @@ export const SocketProvider = ({ children }) => {
       {
         auth: { token }, //send token for authentication
         transports: ['websocket', 'polling'], //try websocket first, fallback to polling
+        reconnectionAttempts: 3, //limit reconnecting attempts
+        reconnectionDelay: 2000, //wait 2s between attempts
       }
     );
 

@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const socketService = require('../services/socket.service');
 
 const prisma = new PrismaClient();
 
@@ -134,9 +135,9 @@ const approveClaim = async (req, res) => {
 
     // prevent double approval
     if (claim.status === 'APPROVED') {
-      return res.status(400).json({ message: 'Claim already approved' })
+      return res.status(400).json({ message: 'Claim already approved' });
     }
-    
+
     //only teh finder can approve
     if (claim.foundItem?.userId !== userId) {
       return res
@@ -171,18 +172,33 @@ const approveClaim = async (req, res) => {
 
       //reward the claimant with points
       prisma.user.update({
-      where: { id: claim.claimantId },
-      data: { points: { increment: 10 } }, //+10 points for successful claim
+        where: { id: claim.claimantId },
+        data: { points: { increment: 10 } }, //+10 points for successful claim
       }),
 
-      //notify the claimant that thier claim was approved
+      //notify the claimant that their claim was approved
       prisma.notification.create({
-      data: {
-        userId: claim.claimantId,
-        message: `Your claim was approved! Contact the finder to retrieve your item.`,
-      },
-    }),
-  ]);
+        data: {
+          userId: claim.claimantId,
+          message: `Your claim was approved! Contact the finder to retrieve your item.`,
+        },
+      }),
+    ]);
+
+    //emit real-time notification to claimant
+    const notification = await prisma.notification.findFirst({
+      where: { userId: claim.claimantId },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (notification) {
+      socketService.notifyUser(claim.claimantId, 'new_notification', {
+        id: notification.id,
+        message: notification.message,
+        isRead: false,
+        createdAt: notification.createdAt,
+      });
+    }
 
     res.json({ message: 'Claim approved successfully' });
   } catch (error) {
@@ -217,12 +233,11 @@ const rejectClaim = async (req, res) => {
       data: { status: 'REJECTED', isCorrect: false },
     });
 
-    //notify the claimant that their claim was rejected
-    await prisma.notification.create({
-      data: {
-        userId: claim.claimantId,
-        message: `Your claim was rejected. The finder did not verify your answer.`,
-      },
+    //emit real-time notification to claimant
+    socketService.notifyUser(claim.claimantId, 'new_notification', {
+      message: `Your claim was rejected. The finder did not verify your answer.`,
+      isRead: false,
+      createdAt: new Date(),
     });
 
     res.json(updated);

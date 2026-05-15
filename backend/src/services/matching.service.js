@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const socketService = require('./socket.service');
 
 const prisma = new PrismaClient();
 
@@ -39,7 +40,7 @@ const calculateMatchScore = (lostItem, foundItem) => {
   );
   const dateScore = dateSimilarity(lostItem.dateLost, foundItem.dateFound);
 
-  const score = (locationScore * 0.6) + (dateScore * 0.4); // weight location more than date
+  const score = locationScore * 0.6 + dateScore * 0.4; // weight location more than date
 
   return Math.round(score * 100) / 100; // round to 2 decimal places
 };
@@ -90,20 +91,36 @@ const matchNewLostItem = async (lostItem) => {
             data: { status: 'MATCHED' },
           });
 
-          //notify the owner of the lost item
-          await prisma.notification.create({
+          //create notification for lost item owner
+          const lostNotification = await prisma.notification.create({
             data: {
               userId: lostItem.userId,
               message: `A potential match has been found for your lost ${lostItem.title}!`,
             },
           });
 
-          //notify the finder
-          await prisma.notification.create({
+          //create notification for the finder
+          const foundNotification = await prisma.notification.create({
             data: {
               userId: foundItem.userId,
               message: `Your found item ${foundItem.title} has been matched with a lost report!`,
             },
+          });
+
+          //emit real-time notifications to lost item owner
+          socketService.notifyUser(lostItem.userId, 'new_notification', {
+            id: lostNotification.id,
+            message: lostNotification.message,
+            isRead: false,
+            createdAt: lostNotification.createdAt,
+          });
+
+          //emit real-time notifications to the finder
+          socketService.notifyUser(foundItem.userId, 'new_notification', {
+            id: foundNotification.id,
+            message: foundNotification.message,
+            isRead: false,
+            createdAt: foundNotification.createdAt,
           });
         }
       }
@@ -157,20 +174,36 @@ const matchNewFoundItem = async (foundItem) => {
             data: { status: 'MATCHED' },
           });
 
-          //notify the owner of the lost item
-          await prisma.notification.create({
+          //create notification for lost item owner
+          const lostNotification = await prisma.notification.create({
             data: {
               userId: lostItem.userId,
               message: `A potential match was found for your lost ${lostItem.title}!`,
             },
           });
 
-          //notify the finder
-          await prisma.notification.create({
+          //create notification for the finder
+          const foundNotification = await prisma.notification.create({
             data: {
               userId: foundItem.userId,
               message: `Your found item ${foundItem.title} has been matched with a lost report!`,
             },
+          });
+
+          //emit real-time notifications to lost item owner
+          socketService.notifyUser(lostItem.userId, 'new_notification', {
+            id: lostNotification.id,
+            message: lostNotification.message,
+            isRead: false,
+            createdAt: lostNotification.createdAt,
+          });
+
+          //emit real-time notifications to the finder
+          socketService.notifyUser(foundItem.userId, 'new_notification', {
+            id: foundNotification.id,
+            message: foundNotification.message,
+            isRead: false,
+            createdAt: foundNotification.createdAt,
           });
         }
       }

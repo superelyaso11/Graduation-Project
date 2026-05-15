@@ -9,6 +9,7 @@ import ReportLost from './pages/ReportLost';
 import ReportFound from './pages/ReportFound';
 import BrowseItems from './pages/BrowseItems';
 import MyItems from './pages/MyItems';
+import Notifications from './pages/Notifications';
 
 const App = () => {
   return (
@@ -60,6 +61,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <MyItems />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
             </ProtectedRoute>
           }
         />

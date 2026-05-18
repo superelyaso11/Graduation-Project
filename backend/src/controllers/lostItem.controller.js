@@ -98,9 +98,46 @@ const getMyLostItems = async (req, res) => {
   }
 };
 
+// DELETE /api/lost-items/:id - delete a lost item report
+const deleteLostItem = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id; //logged in user
+
+  try {
+    const lostItem = await prisma.lostItem.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!lostItem) {
+      return res.status(404).json({ message: 'Lost item not found' });
+    }
+
+    //only the owner can delete
+    if (lostItem.userId !== userId) {
+      return res
+        .status(403)
+        .json({ message: 'Not authorized to delete this item' });
+    }
+
+    //only ACTIVE items can be deleted
+    if (lostItem.status !== 'ACTIVE') {
+      return res
+        .status(400)
+        .json({ message: 'Only active items can be deleted' });
+    }
+
+    await prisma.lostItem.delete({ where: { id: parseInt(id) } });
+
+    res.json({ message: 'Lost item deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
 module.exports = {
   createLostItem,
   getLostItems,
   getLostItemById,
   getMyLostItems,
+  deleteLostItem,
 };

@@ -37,7 +37,7 @@ const MyItems = () => {
       setIncomingClaims(incoming.data);
       setMyClaims(mine.data);
     } catch (err) {
-        console.error('Failed to fetch items', err) 
+      console.error('Failed to fetch items', err);
     } finally {
       setLoading(false);
     }
@@ -99,9 +99,9 @@ const MyItems = () => {
       await api.patch(`/claims/${claimId}/approve`);
 
       // update the claim status directly in state — no refetch needed
-      setIncomingClaims(prev => prev.map(c =>
-        c.id === claimId ? { ...c, status: 'APPROVED' } : c
-      ));
+      setIncomingClaims((prev) =>
+        prev.map((c) => (c.id === claimId ? { ...c, status: 'APPROVED' } : c))
+      );
 
       setSuccessMsg('✅ Claim approved! Item marked as resolved.');
       setTimeout(() => setSuccessMsg(''), 4000);
@@ -114,16 +114,39 @@ const MyItems = () => {
   const handleReject = async (claimId) => {
     try {
       await api.patch(`/claims/${claimId}/reject`);
-      
+
       // update the claim status directly in state — no refetch needed
-      setIncomingClaims(prev => prev.map(c =>
-      c.id === claimId ? { ...c, status: 'REJECTED' } : c
-      ));
+      setIncomingClaims((prev) =>
+        prev.map((c) => (c.id === claimId ? { ...c, status: 'REJECTED' } : c))
+      );
 
       setSuccessMsg('❌ Claim rejected.');
       setTimeout(() => setSuccessMsg(''), 4000);
     } catch (err) {
       console.error('Failed to reject claim:', err);
+    }
+  };
+
+  const handleDelete = async (itemId) => {
+    //ask for confirmation before deleting
+    if (
+      !window.confirm(
+        'Are you sure you want to delete this item? This action cannot be undone.'
+      )
+    )
+      return;
+
+    try {
+      await api.delete(`/lost-items/${itemId}`);
+      setLostItems((prev) => prev.filter((item) => item.id !== itemId)); //remove from state instantly
+      setSuccessMsg('🗑️ Report deleted successfully.');
+      setTimeout(() => setSuccessMsg(''), 4000);
+    } catch (err) {
+      console.log('Failed to delete item:', err);
+      setSuccessMsg(
+        '❌ ' + (err.response?.data?.message || 'Failed to delete item')
+      );
+      setTimeout(() => setSuccessMsg(''), 4000);
     }
   };
 
@@ -218,6 +241,21 @@ const MyItems = () => {
                         onClick={() => handleClaim(item)}
                       >
                         Submit Claim
+                      </button>
+                    )}
+                    {/* only show delete button for ACTIVE items */}
+                    {item.status === 'ACTIVE' && (
+                      <button
+                        style={s.deleteBtn}
+                        onClick={() => handleDelete(item.id)}
+                        onMouseEnter={(e) =>
+                          (e.target.style.backgroundColor = '#B91C1C')
+                        }
+                        onMouseLeave={(e) =>
+                          (e.target.style.backgroundColor = 'transparent')
+                        }
+                      >
+                        🗑️ Delete
                       </button>
                     )}
                   </div>
@@ -637,6 +675,18 @@ const s = {
     fontWeight: '600',
     cursor: 'pointer',
     fontFamily: 'Sora, sans-serif',
+  },
+  deleteBtn: {
+    backgroundColor: 'transparent',
+    border: '1px solid #EF4444',
+    color: '#EF4444',
+    borderRadius: '8px',
+    padding: '0.5rem 1rem',
+    fontSize: '0.85rem',
+    fontWeight: '600',
+    cursor: 'pointer',
+    fontFamily: 'Sora, sans-serif',
+    transition: 'background-color 0.2s',
   },
 };
 

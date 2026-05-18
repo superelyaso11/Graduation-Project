@@ -9,15 +9,16 @@ export const SocketProvider = ({ children }) => {
   const { user } = useAuth();
   const [socket, setSocket] = useState(null); //socket instance
   const [connected, setConnected] = useState(false); //connection status
+  const socketRef = useRef(null); //use ref to avoid setState in effect
 
   useEffect(() => {
     if (!user) {
       //don't connect if not logged in
-      if (socket) {
-        socket.disconnect(); //disconnect if user logs out
-        setSocket(null);
-        setConnected(false);
+      if (socketRef.current) {
+        socketRef.current.disconnect(); //disconnect if user logs out
+        socketRef.current = null;
       }
+      return;
     }
 
     const token = localStorage.getItem('token'); //get JWT token
@@ -39,6 +40,7 @@ export const SocketProvider = ({ children }) => {
     newSocket.on('connect', () => {
       console.log('Socket connected:', newSocket.id);
       setConnected(true);
+      setSocket(newSocket); //store socket in state
     });
 
     newSocket.on('disconnect', () => {
@@ -55,6 +57,7 @@ export const SocketProvider = ({ children }) => {
     //cleanup on unmount or user logout
     return () => {
       newSocket.disconnect();
+      socketRef.current = null;
     };
   }, [user]); //reconnect when user  changes
 

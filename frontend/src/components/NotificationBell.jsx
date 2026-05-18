@@ -9,6 +9,16 @@ const NotificationBell = () => {
   const [unread, setUnread] = useState(0);
   const { socket } = useSocket();
 
+  const fetchNotifications = async () => {
+    try {
+      const { data } = await api.get('/notifications');
+      setNotifications(data);
+      setUnread(data.filter((n) => !n.isRead).length); //count unread
+    } catch (err) {
+      console.error('Failed to fetch notifications:', err);
+    }
+  };
+
   //fetch notifications on mount
   useEffect(() => {
     fetchNotifications();
@@ -32,16 +42,6 @@ const NotificationBell = () => {
     };
   }, [socket]); //re-run when socket is ready
 
-  const fetchNotifications = async () => {
-    try {
-      const { data } = await api.get('/notifications');
-      setNotifications(data);
-      setUnread(data.filter((n) => !n.isRead).length); //count unread
-    } catch (err) {
-      console.error('Failed to fetch notifications:', err);
-    }
-  };
-
   const handleOpen = async () => {
     setOpen(!open);
     if (!open && unread > 0) {
@@ -55,13 +55,15 @@ const NotificationBell = () => {
     }
   };
 
-  const formatTime = (dateStr) => {
-    const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000);
+  const formatTime = (dateStr, now) => {
+    const diff = Math.floor((now - new Date(dateStr)) / 1000);
     if (diff < 60) return 'Just now';
     if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     return `${Math.floor(diff / 86400)}d ago`;
   };
+
+  const now = new Date().getTime(); //current time for formatting
 
   return (
     <div style={s.wrap}>

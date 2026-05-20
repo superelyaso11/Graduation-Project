@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import LocationDropdown from '../components/LocationDropdown';
 import CategoryDropdown from '../components/CategoryDropdown';
+import ImageUpload from '../components/ImageUpload';
 
 const ReportFound = () => {
   const navigate = useNavigate();
@@ -15,13 +16,13 @@ const ReportFound = () => {
     category: '',
     location: '',
     dateFound: '',
-    imageUrl: '',
     heldAt: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const today = new Date().toISOString().split('T')[0];
+  const [imageUrl, setImageUrl] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,7 +49,7 @@ const ReportFound = () => {
     setLoading(true);
 
     try {
-      await api.post('/found-items', formData);
+      await api.post('/found-items', { ...formData, imageUrl });
       setSuccess(true);
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err) {
@@ -170,20 +171,14 @@ const ReportFound = () => {
 
               <div style={s.field}>
                 <label style={s.label}>
-                  Image URL{' '}
+                  Image
                   <span style={{ color: '#94A3B8', fontWeight: '400' }}>
                     (optional)
                   </span>
                 </label>
-                <input
-                  style={s.input}
-                  type="text"
-                  name="imageUrl"
-                  placeholder="https://..."
-                  value={formData.imageUrl}
-                  onChange={handleChange}
-                  onFocus={focusStyle}
-                  onBlur={blurStyle}
+                <ImageUpload
+                  onUpload={(url) => setImageUrl(url)} //called when upload completes
+                  currentImage={imageUrl}
                 />
               </div>
 

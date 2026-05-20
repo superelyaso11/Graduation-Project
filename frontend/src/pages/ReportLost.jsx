@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import LocationDropdown from '../components/LocationDropdown';
 import CategoryDropdown from '../components/CategoryDropdown';
+import ImageUpload from '../components/ImageUpload';
 
 const ReportLost = () => {
   const navigate = useNavigate();
@@ -15,12 +16,12 @@ const ReportLost = () => {
     category: '',
     location: '',
     dateLost: '',
-    imageUrl: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const today = new Date().toISOString().split('T')[0];
+  const [imageUrl, setImageUrl] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,7 +48,7 @@ const ReportLost = () => {
     setLoading(true);
 
     try {
-      await api.post('/lost-items', formData); //send to backend
+      await api.post('/lost-items', { ...formData, imageUrl }); //send to backend
       setSuccess(true);
       setTimeout(() => navigate('/dashboard'), 1500); //redirect after 1.5s
     } catch (err) {
@@ -154,7 +155,7 @@ const ReportLost = () => {
                 />
               </div>
 
-              {/* Image URL (optional) */}
+              {/* Image Upload */}
               <div style={s.field}>
                 <label style={s.label}>
                   Image URL{' '}
@@ -162,15 +163,9 @@ const ReportLost = () => {
                     (optional)
                   </span>
                 </label>
-                <input
-                  style={s.input}
-                  type="text"
-                  name="imageUrl"
-                  placeholder="https://..."
-                  value={formData.imageUrl}
-                  onChange={handleChange}
-                  onFocus={focusStyle}
-                  onBlur={blurStyle}
+                <ImageUpload
+                  onUpload={(url) => setImageUrl(url)} //called when upload completes
+                  currentImage={imageUrl}
                 />
               </div>
 

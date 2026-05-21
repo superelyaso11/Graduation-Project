@@ -1,5 +1,4 @@
 const js = require('@eslint/js');
-const globals = require('globals');
 
 module.exports = [
   js.configs.recommended,
@@ -13,8 +12,6 @@ module.exports = [
         require: 'readonly',
         module: 'readonly',
         __dirname: 'readonly',
-        ...globals.node,
-        ...globals.es2022,
       },
     },
     rules: {

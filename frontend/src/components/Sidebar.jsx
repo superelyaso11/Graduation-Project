@@ -1,16 +1,60 @@
 import { Link, useLocation } from 'react-router-dom';
-
-const navItems = [
-  { icon: '🏠', label: 'Dashboard', path: '/dashboard' },
-  { icon: '📢', label: 'Report Lost', path: '/report-lost' },
-  { icon: '📦', label: 'Report Found', path: '/report-found' },
-  { icon: '🔍', label: 'Browse Lost Items', path: '/browse-items' },
-  { icon: '👤', label: 'My Items', path: '/my-items' },
-  { icon: '🔔', label: 'Notifications', path: '/notifications' },
-];
+import { useAuth } from '../context/AuthContext';
 
 const Sidebar = () => {
   const location = useLocation();
+  const { user } = useAuth();
+
+  const navItems = [
+    {
+      icon: '🏠',
+      label: 'Dashboard',
+      path: '/dashboard',
+      roles: ['STUDENT', 'SECURITY', 'ADMIN'],
+    },
+    {
+      icon: '📢',
+      label: 'Report Lost',
+      path: '/report-lost',
+      roles: ['STUDENT', 'ADMIN'],
+    },
+    {
+      icon: '📦',
+      label: 'Report Found',
+      path: '/report-found',
+      roles: ['STUDENT', 'ADMIN'],
+    },
+    {
+      icon: '🔍',
+      label: 'Browse Lost Items',
+      path: '/browse-items',
+      roles: ['STUDENT', 'SECURITY', 'ADMIN'],
+    },
+    {
+      icon: '👤',
+      label: 'My Items',
+      path: '/my-items',
+      roles: ['STUDENT', 'ADMIN'],
+    },
+    {
+      icon: '🔒',
+      label: 'Security Dashboard',
+      path: '/security',
+      roles: ['SECURITY', 'ADMIN'],
+    },
+    {
+      icon: '⚙️',
+      label: 'Admin Dashboard',
+      path: '/admin',
+      roles: ['ADMIN'],
+    },
+    {
+      icon: '🔔',
+      label: 'Notifications',
+      path: '/notifications',
+      roles: ['STUDENT', 'SECURITY', 'ADMIN'],
+    },
+  ].filter((item) => item.roles.includes(user?.role));
 
   return (
     <aside style={s.sidebar}>

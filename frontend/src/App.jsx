@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import SecurityDashboard from './pages/SecurityDashboard';
 
 //pages
 import Login from './pages/Login';
@@ -61,6 +62,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <MyItems />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/security"
+          element={
+            <ProtectedRoute allowedRoles={['SECURITY', 'ADMIN']}>
+              <SecurityDashboard />
             </ProtectedRoute>
           }
         />

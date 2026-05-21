@@ -37,6 +37,8 @@ export const SocketProvider = ({ children }) => {
       }
     );
 
+    socketRef.current = newSocket; //store socket in state
+
     newSocket.on('connect', () => {
       console.log('Socket connected:', newSocket.id);
       setConnected(true);
@@ -52,13 +54,12 @@ export const SocketProvider = ({ children }) => {
       console.error('Socket connection error:', err.message);
     });
 
-    setSocket(newSocket); //store socket in state
-
     //cleanup on unmount or user logout
     return () => {
       newSocket.disconnect();
       socketRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]); //reconnect when user  changes
 
   return (

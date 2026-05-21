@@ -1,3 +1,4 @@
+/* eslint-env node, es2022 */
 const { GoogleGenAI } = require('@google/genai'); //gemini sdk
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });

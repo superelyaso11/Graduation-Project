@@ -59,6 +59,7 @@ export const SocketProvider = ({ children }) => {
       newSocket.disconnect();
       socketRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]); //reconnect when user  changes
 
   return (

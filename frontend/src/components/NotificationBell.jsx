@@ -1,5 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import api from '../api/axios';
 import { useSocket } from '../context/SocketContext';
 
@@ -9,7 +8,7 @@ const NotificationBell = () => {
   const [unread, setUnread] = useState(0);
   const { socket } = useSocket();
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
     try {
       const { data } = await api.get('/notifications');
       setNotifications(data);
@@ -17,11 +16,12 @@ const NotificationBell = () => {
     } catch (err) {
       console.error('Failed to fetch notifications:', err);
     }
-  };
+  }, []);
 
   //fetch notifications on mount
   useEffect(() => {
     fetchNotifications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //listen for real-time notifications from server

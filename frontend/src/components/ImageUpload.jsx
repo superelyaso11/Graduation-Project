@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import api from '../api/axios';
 
-const ImageUpload = ({ onUpload, currentImage }) => {
+const ImageUpload = ({ onUpload, onAnalysis, currentImage }) => {
   const [preview, setPreview] = useState(currentImage || null); //image preview URL
   const [uploading, setUploading] = useState(false); //upload loading state
+  const [analyzing, setAnalyzing] = useState(false); //analysis state
   const [error, setError] = useState('');
 
   const handleFileChange = async (e) => {
@@ -24,11 +25,31 @@ const ImageUpload = ({ onUpload, currentImage }) => {
       const formData = new FormData();
       formData.append('image', file); //attach file to form data
 
+      //step 1 - upload image to cloudinary
       const { data } = await api.post('/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }, //required for file upload
       });
 
       onUpload(data.url); //pass cloudinary image URL to parent
+      setUploading(false);
+
+      //step 2 - analyze with Gemini if onAnalysis callback provided
+      if (onAnalysis) {
+        setAnalyzing(true);
+        try {
+          const { data: analysis } = await api.post('/upload/analyze', {
+            imageUrl: data.url, //send cloudinary URL for analysis
+          });
+
+          if (analysis.success) {
+            onAnalysis(analysis); //pass suggestions to parent
+          }
+        } catch (err) {
+          console.error('Analysis failed:', err); //fail silently
+        } finally {
+          setAnalyzing(false);
+        }
+      }
     } catch (err) {
       setError('Upload failed. Please try again.');
       setPreview(null);
@@ -50,6 +71,14 @@ const ImageUpload = ({ onUpload, currentImage }) => {
       {preview ? (
         <div style={s.previewWrap}>
           <img src={preview} alt="Preview" style={s.preview} />
+
+          {/* Show analyzing overlay on top of preview */}
+          {analyzing && (
+            <div style={s.analyzingOverlay}>
+              <span style={s.analyzingIcon}>🤖</span>
+              <p style={s.analyzingText}>AI is analyzing your image...</p>
+            </div>
+          )}
           <button type="button" style={s.removeBtn} onClick={handleRemove}>
             ✕ Remove
           </button>
@@ -97,6 +126,19 @@ const s = {
     borderRadius: '10px',
     border: '1px solid #334155',
   },
+  analyzingOverlay: {
+    position: 'absolute',
+    inset: 0,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: '10px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '0.5rem',
+  },
+  analyzingIcon: { fontSize: '2rem' },
+  analyzingText: { fontSize: '0.875rem', color: '#F8FAFC', fontWeight: '500' },
   removeBtn: {
     position: 'absolute',
     top: '0.5rem',

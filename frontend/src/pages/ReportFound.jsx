@@ -23,6 +23,7 @@ const ReportFound = () => {
   const [success, setSuccess] = useState(false);
   const today = new Date().toISOString().split('T')[0];
   const [imageUrl, setImageUrl] = useState('');
+  const [aiSuggestion, setAiSuggestion] = useState(null); //store AI suggestions
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,6 +58,22 @@ const ReportFound = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAnalysis = (analysis) => {
+    if (!analysis) {
+      setAiSuggestion(null);
+      return;
+    }
+
+    setAiSuggestion(analysis); // store suggestion
+
+    // auto-fill category and description if empty
+    setFormData((prev) => ({
+      ...prev,
+      category: prev.category || analysis.category, // only fill if not already set
+      description: prev.description || analysis.description,
+    }));
   };
 
   const focusStyle = (e) => (e.target.style.borderColor = '#2563EB');
@@ -178,9 +195,31 @@ const ReportFound = () => {
                 </label>
                 <ImageUpload
                   onUpload={(url) => setImageUrl(url)} //called when upload completes
+                  onAnalysis={handleAnalysis}
                   currentImage={imageUrl}
                 />
               </div>
+
+              {/* AI suggestion banner */}
+              {aiSuggestion && (
+                <div style={s.aiBanner}>
+                  <span style={s.aiIcon}>🤖</span>
+                  <div style={s.aiContent}>
+                    <p style={s.aiTitle}>AI Suggestion</p>
+                    <p style={s.aiText}>
+                      Category: <strong>{aiSuggestion.category}</strong> ·
+                      Description pre-filled based on your image
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    style={s.aiDismiss}
+                    onClick={() => setAiSuggestion(null)}
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
 
               <div style={s.btnRow}>
                 <button
@@ -288,6 +327,32 @@ const s = {
     cursor: 'pointer',
     transition: 'background-color 0.2s',
     fontFamily: 'Sora, sans-serif',
+  },
+  aiBanner: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.75rem',
+    backgroundColor: 'rgba(37,99,235,0.1)',
+    border: '1px solid rgba(37,99,235,0.3)',
+    borderRadius: '10px',
+    padding: '0.875rem 1rem',
+  },
+  aiIcon: { fontSize: '1.25rem', flexShrink: 0 },
+  aiContent: { flex: 1 },
+  aiTitle: {
+    fontSize: '0.8rem',
+    fontWeight: '700',
+    color: '#60A5FA',
+    marginBottom: '0.2rem',
+  },
+  aiText: { fontSize: '0.8rem', color: '#94A3B8' },
+  aiDismiss: {
+    backgroundColor: 'transparent',
+    border: 'none',
+    color: '#94A3B8',
+    cursor: 'pointer',
+    fontSize: '0.9rem',
+    flexShrink: 0,
   },
 };
 

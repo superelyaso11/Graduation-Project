@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
-import SecurityDashboard from './pages/SecurityDashboard';
 
 //pages
 import Login from './pages/Login';
@@ -11,6 +10,8 @@ import ReportFound from './pages/ReportFound';
 import BrowseItems from './pages/BrowseItems';
 import MyItems from './pages/MyItems';
 import Notifications from './pages/Notifications';
+import SecurityDashboard from './pages/SecurityDashboard';
+import AdminDashboard from './pages/AdminDashboard';
 
 const App = () => {
   return (
@@ -71,6 +72,15 @@ const App = () => {
           element={
             <ProtectedRoute allowedRoles={['SECURITY', 'ADMIN']}>
               <SecurityDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

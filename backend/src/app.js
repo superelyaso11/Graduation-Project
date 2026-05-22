@@ -8,6 +8,7 @@ const ClaimRoutes = require('./routes/claim.routes');
 const notificationRoutes = require('./routes/notification.routes');
 const uploadRoutes = require('./routes/upload.routes');
 const securityRoutes = require('./routes/security.routes');
+const adminRoutes = require('./routes/admin.routes');
 const app = express();
 
 app.use(cors());
@@ -19,6 +20,7 @@ app.use('/api/claims', ClaimRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/security', securityRoutes);
+app.use('/api/admin', adminRoutes);
 app.get('/', (req, res) => {
   res.json({ message: 'Lost and Found API is running' });
 });

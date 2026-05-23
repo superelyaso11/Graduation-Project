@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import { data } from 'react-router-dom';
 
 const SecurityDashboard = () => {
   const [items, setItems] = useState([]); //all found items
@@ -29,24 +30,24 @@ const SecurityDashboard = () => {
   };
 
   const handleHold = async () => {
-    e.preventDefault();
     try {
       await api.patch(`/security/items/${selectedItem.id}/hold`, { heldAt });
       setItems((prev) =>
         prev.map((item) =>
-          item.id === selectedItem.id ? { ...item, heldAt } : item
+          item.id === selectedItem.id ? { ...item, heldAt: data.heldAt } : item
         )
       );
       setHoldModal(false);
       setSuccessMsg('✅ Item marked as held at security.');
       setTimeout(() => setSuccessMsg(''), 4000);
+      await fetchItems();
     } catch (err) {
       console.error('Failed to update item', err);
     }
   };
 
   const handleResolve = async (itemId) => {
-    if (!window.confirm('Mark this item as resolved and returned to owner?'))
+    if (!window.confirm('Confirm that the owner has collected this item?'))
       return;
     try {
       await api.patch(`/security/items/${itemId}/resolve`);
@@ -56,6 +57,7 @@ const SecurityDashboard = () => {
         )
       );
       setSuccessMsg('✅ Item marked as resolved.');
+      await fetchItems();
       setTimeout(() => setSuccessMsg(''), 4000);
     } catch (err) {
       console.error('Failed to resolve item', err);
@@ -214,17 +216,19 @@ const SecurityDashboard = () => {
                         setHoldModal(true);
                       }}
                     >
-                      🏢 Mark as Held
+                      🏢 {item.heldAt ? 'Update Location' : 'Mark as Held'}
                     </button>
                   )}
-                  {item.status === 'MATCHED' && (
-                    <button
-                      style={s.resolveBtn}
-                      onClick={() => handleResolve(item.id)}
-                    >
-                      ✅ Mark Resolved
-                    </button>
-                  )}
+
+                  {item.status !== 'RESOLVED' &&
+                    (item.heldAt || item.status === 'MATCHED') && (
+                      <button
+                        style={s.resolveBtn}
+                        onClick={() => handleResolve(item.id)}
+                      >
+                        ✅ Owner Collected
+                      </button>
+                    )}
                 </div>
               </div>
             ))}
@@ -243,7 +247,13 @@ const SecurityDashboard = () => {
                 {selectedItem?.title}
               </strong>
             </p>
-            <form onSubmit={handleHold} style={s.form}>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleHold();
+              }}
+              style={s.form}
+            >
               <div style={s.field}>
                 <label style={s.label}>Location where item is held</label>
                 <input

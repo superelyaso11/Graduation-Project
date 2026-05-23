@@ -41,7 +41,10 @@ router.patch(
     try {
       const item = await prisma.foundItem.update({
         where: { id: parseInt(id) },
-        data: { heldAt: heldAt || 'Security Office' }, //update held location
+        data: {
+          heldAt: heldAt || 'Security Office',
+          status: 'ACTIVE',
+        }, //update held location
       });
       res.json(item);
     } catch (error) {

@@ -119,26 +119,59 @@ router.get('/reports', protect, allowRoles('ADMIN'), async (req, res) => {
 
 //DELETE /api/admin/lost/:id - delete a lost item report
 router.delete('/lost/:id', protect, allowRoles('ADMIN'), async (req, res) => {
+  const itemId = parseInt(req.params.id); //renamed to avoid any scope issues
+
   try {
-    //delete related records first to avoid foreign key constraints errors
-    await prisma.notification.deleteMany({ where: { userId: undefined } }); //keep notifications
-    await prisma.claim.deleteMany({ where: { lostItem: id } }); //delete related claims
-    await prisma.match.deleteMany({ where: { lostItem: id } }); //delete related matches
-    await prisma.lostItem.delete({ where: { id: parseInt(id) } });
+    // find related matches first
+    const matches = await prisma.match.findMany({
+      where: { lostItemId: itemId },
+    });
+    const foundItemIds = matches.map((m) => m.foundItemId);
+
+    //delete claims on this lost item
+    await prisma.claim.deleteMany({ where: { lostItemId: itemId } });
+    //delete claims on related found items only if there are any
+    if (foundItemIds.length > 0) {
+      await prisma.claim.deleteMany({
+        where: { foundItemId: { in: foundItemIds } },
+      });
+    }
+    //delete matches
+    await prisma.match.deleteMany({ where: { lostItemId: itemId } });
+    //delete the lost item
+    await prisma.lostItem.delete({ where: { id: itemId } });
     res.json({ message: 'Lost item deleted successfully' });
   } catch (error) {
+    console.error('Delete lost error:', error.message);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
 //DELETE /api/admin/found/:id — delete a found item report
 router.delete('/found/:id', protect, allowRoles('ADMIN'), async (req, res) => {
+  const itemId = parseInt(req.params.id);
   try {
-    await prisma.claim.deleteMany({ where: { foundItemId: id } }); //delete related claims
-    await prisma.match.deleteMany({ where: { foundItemId: id } }); //delete related matches
-    await prisma.foundItem.delete({ where: { id: parseInt(req.params.id) } });
+    const matches = await prisma.match.findMany({
+      where: { foundItemId: itemId },
+    });
+
+    const lostItemIds = matches.map((m) => m.lostItemId);
+
+    await prisma.claim.deleteMany({ where: { foundItemId: itemId } });
+
+    if (lostItemIds.length > 0) {
+      await prisma.claim.deleteMany({
+        where: { lostItemId: { in: lostItemIds } },
+      });
+    }
+
+    await prisma.match.deleteMany({ where: { foundItemId: itemId } });
+
+    await prisma.foundItem.delete({ where: { id: itemId } });
+
     res.json({ message: 'Found item deleted successfully' });
   } catch (error) {
+    console.error('Delete found error:', error.message);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });

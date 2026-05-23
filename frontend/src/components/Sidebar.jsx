@@ -16,13 +16,13 @@ const Sidebar = () => {
       icon: '📢',
       label: 'Report Lost',
       path: '/report-lost',
-      roles: ['STUDENT', 'ADMIN'],
+      roles: ['STUDENT'],
     },
     {
       icon: '📦',
       label: 'Report Found',
       path: '/report-found',
-      roles: ['STUDENT', 'ADMIN'],
+      roles: ['STUDENT'],
     },
     {
       icon: '🔍',
@@ -34,7 +34,7 @@ const Sidebar = () => {
       icon: '👤',
       label: 'My Items',
       path: '/my-items',
-      roles: ['STUDENT', 'ADMIN'],
+      roles: ['STUDENT'],
     },
     {
       icon: '🔒',

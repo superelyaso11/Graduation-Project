@@ -48,6 +48,15 @@ io.on('connection', (socket) => {
 const socketService = require('./src/services/socket.service');
 socketService.init(io);
 
+const cron = require('node-cron');
+const { runExpiryJob } = require('./src/services/expiry.service');
+
+//run every day at midnight
+cron.schedule('0 0 * * *', () => {
+  console.log('Running scheduled expiry job...');
+  runExpiryJob();
+});
+
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -197,12 +197,13 @@ router.patch(
   allowRoles('ADMIN'),
   async (req, res) => {
     try {
-      const item = await prisma.lostItem.findMany({
+      const item = await prisma.lostItem.update({
         where: { id: parseInt(req.params.id) },
         data: { status: 'DONATED' },
       });
       res.json(item);
     } catch (error) {
+      console.error('Donate error:', error.message);
       res.status(500).json({ message: 'Server error', error: error.message });
     }
   }

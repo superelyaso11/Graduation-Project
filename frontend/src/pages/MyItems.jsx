@@ -3,6 +3,7 @@ import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import { useAuth } from '../context/AuthContext';
+import ReputationBadge from '../components/ReputationBadge';
 
 const MyItems = () => {
   useAuth();
@@ -307,10 +308,12 @@ const MyItems = () => {
                     <h3 style={s.itemTitle}>
                       Claim for: {claim.foundItem?.title}
                     </h3>
-                    <p style={s.itemMeta}>
-                      👤 {claim.claimant?.name} · ⭐ {claim.claimant?.points}{' '}
-                      pts
-                    </p>
+                    <p style={s.itemMeta}>👤 {claim.claimant?.name}</p>
+                    <ReputationBadge
+                      points={claim.claimant?.points || 0}
+                      showPoints={true}
+                      size="small"
+                    />
                     <p style={s.claimQuestion}>
                       <strong>Question:</strong> {claim.question}
                     </p>

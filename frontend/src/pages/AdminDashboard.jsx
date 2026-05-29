@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import ReputationBadge from '../components/ReputationBadge';
 
 const ROLES = ['STUDENT', 'SECURITY', 'ADMIN'];
 
@@ -258,6 +259,11 @@ const AdminDashboard = () => {
                       ✉️ {user.email} · ⭐ {user.points} pts · 📦{' '}
                       {user._count.lostItems} lost · 🔍 {user._count.foundItems}{' '}
                       found · 📅 Joined {formatDate(user.createdAt)}
+                      <ReputationBadge
+                        points={user.points}
+                        showPoints={true}
+                        size="small"
+                      />
                     </p>
                   </div>
 

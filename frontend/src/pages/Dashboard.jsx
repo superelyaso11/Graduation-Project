@@ -5,6 +5,7 @@ import { useSocket } from '../context/SocketContext';
 import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
+import ReputationBadge from '../components/ReputationBadge';
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -22,6 +23,7 @@ const Dashboard = () => {
   const [recentActivity, setRecentActivity] = useState([]);
   const [recentNotifications, setRecentNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userPoints, setUserPoints] = useState(user?.points || 0);
 
   const fetchDashboard = useCallback(async () => {
     try {
@@ -29,6 +31,7 @@ const Dashboard = () => {
       setStats(data.stats);
       setRecentActivity(data.recentActivity);
       setRecentNotifications(data.recentNotifications);
+      setUserPoints(data.userPoints);
     } catch (err) {
       console.error('Failed to fetch dashboard data', err);
     } finally {
@@ -94,6 +97,28 @@ const Dashboard = () => {
         />
 
         <div style={s.content}>
+          {/* User info card with reputation */}
+          <div style={s.userCard}>
+            <div style={s.userAvatar}>
+              {user?.name
+                ?.split(' ')
+                .map((n) => n[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2)}
+            </div>
+            <div style={s.userInfo}>
+              <h2 style={s.userName}>{user?.name}</h2>
+              <ReputationBadge
+                points={userPoints || 0}
+                showPoints={true}
+                size="medium"
+              />
+            </div>
+            <div style={s.userRole}>
+              <span style={s.roleBadge}>{user?.role}</span>
+            </div>
+          </div>
           {/* Stat Cards */}
           <div style={s.statsGrid}>
             {[
@@ -432,6 +457,44 @@ const s = {
     cursor: 'pointer',
     fontFamily: 'Sora, sans-serif',
     transition: 'background-color 0.2s',
+  },
+  userCard: {
+    backgroundColor: '#1E293B',
+    border: '1px solid #334155',
+    borderRadius: '16px',
+    padding: '1.25rem 1.5rem',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '1rem',
+  },
+  userAvatar: {
+    width: '52px',
+    height: '52px',
+    backgroundColor: '#2563EB',
+    borderRadius: '50%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '1.1rem',
+    fontWeight: '700',
+    color: 'white',
+    flexShrink: 0,
+  },
+  userInfo: { flex: 1 },
+  userName: {
+    fontSize: '1.1rem',
+    fontWeight: '700',
+    color: '#F8FAFC',
+    marginBottom: '0.35rem',
+  },
+  userRole: { flexShrink: 0 },
+  roleBadge: {
+    fontSize: '0.75rem',
+    backgroundColor: '#1E3A5F',
+    color: '#60A5FA',
+    padding: '0.25rem 0.75rem',
+    borderRadius: '6px',
+    fontWeight: '600',
   },
 };
 

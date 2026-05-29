@@ -1,6 +1,7 @@
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const { protect } = require('../middleware/auth.middleware');
+const { userInfo } = require('node:os');
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -17,6 +18,7 @@ router.get('/stats', protect, async (req, res) => {
       resolvedItems,
       recentNotifications,
       recentActivity,
+      currentUser,
     ] = await Promise.all([
       // count active lost items
       prisma.lostItem.count({
@@ -60,6 +62,12 @@ router.get('/stats', protect, async (req, res) => {
           category: true,
         },
       }),
+
+      //get user points
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { points: true },
+      }),
     ]);
 
     res.json({
@@ -72,6 +80,7 @@ router.get('/stats', protect, async (req, res) => {
       },
       recentNotifications,
       recentActivity,
+      userPoints: currentUser.points,
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

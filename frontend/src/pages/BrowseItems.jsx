@@ -5,6 +5,7 @@ import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
 import LocationDropdown from '../components/LocationDropdown';
 import CategoryDropdown from '../components/CategoryDropdown';
+import ReputationBadge from '../components/ReputationBadge';
 
 const BrowseItems = () => {
   const { user } = useAuth();
@@ -186,7 +187,21 @@ const BrowseItems = () => {
 
                 <div style={s.cardFooter}>
                   <span style={s.locationTag}>📍 {item.location}</span>
-                  <span style={s.reporterTag}>👤 {item.user?.name}</span>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'flex-end',
+                      gap: '0.25rem',
+                    }}
+                  >
+                    <span style={s.reporterTag}>👤 {item.user?.name}</span>
+                    <ReputationBadge
+                      points={item.user?.points || 0}
+                      showPoints={false}
+                      size="small"
+                    />
+                  </div>
                 </div>
 
                 {/* Only show button if not the user's own item */}

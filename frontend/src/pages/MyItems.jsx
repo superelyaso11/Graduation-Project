@@ -23,10 +23,14 @@ const MyItems = () => {
   const [successMsg, setSuccessMsg] = useState(''); //success message after claim submission
 
   useEffect(() => {
+    fetchAll();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (!socket) return;
-    socket.on('new_notification', () => {
-      fetchAll();
-    });
+    const handler = () => fetchAll();
+    socket.on('new_notification', handler);
     return () => socket.off('new_notification');
   }, [socket]);
 

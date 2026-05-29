@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSocket } from '../context/SocketContext';
 import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
@@ -6,7 +7,8 @@ import { useAuth } from '../context/AuthContext';
 import ReputationBadge from '../components/ReputationBadge';
 
 const MyItems = () => {
-  useAuth();
+  const { user, refreshUser } = useAuth();
+  const { socket } = useSocket();
   const [lostItems, setLostItems] = useState([]); //user's lost item reports
   const [foundItems, setFoundItems] = useState([]); //user's found item reports
   const [incomingClaims, setIncomingClaims] = useState([]); //claims on user's found items
@@ -21,8 +23,12 @@ const MyItems = () => {
   const [successMsg, setSuccessMsg] = useState(''); //success message after claim submission
 
   useEffect(() => {
-    fetchAll();
-  }, []);
+    if (!socket) return;
+    socket.on('new_notification', () => {
+      fetchAll();
+    });
+    return () => socket.off('new_notification');
+  }, [socket]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -104,10 +110,14 @@ const MyItems = () => {
         prev.map((c) => (c.id === claimId ? { ...c, status: 'APPROVED' } : c))
       );
 
+      await refreshUser(); //refresh points immediatly
       setSuccessMsg('✅ Claim approved! Item marked as resolved.');
       setTimeout(() => setSuccessMsg(''), 4000);
     } catch (err) {
-      console.error('Failed to approve claim:', err);
+      console.error(
+        'Failed to approve claim:',
+        err.response?.data || err.message
+      );
     }
   };
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
 import Navbar from '../components/Navbar';
@@ -9,6 +10,7 @@ import ReputationBadge from '../components/ReputationBadge';
 
 const BrowseItems = () => {
   const { user } = useAuth();
+  const { socket } = useSocket();
 
   const [items, setItems] = useState([]); // all lost items
   const [loading, setLoading] = useState(true); // loading state
@@ -27,9 +29,13 @@ const BrowseItems = () => {
   const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
-    fetchItems();
+    if (!socket) return;
+    socket.on('new_notification', () => {
+      fetchItems();
+    });
+    return () => socket.off('new_notification');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category]);
+  }, [category, socket]);
 
   const fetchItems = async () => {
     setLoading(true);

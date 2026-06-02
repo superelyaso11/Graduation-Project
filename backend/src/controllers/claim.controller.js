@@ -200,6 +200,20 @@ const approveClaim = async (req, res) => {
       });
     }
 
+    //automatically create chat room - inside the try block so claim is in scope
+    try {
+      await prisma.chatRoom.create({
+        data: {
+          claimId: parseInt(id),
+          ownerId: claim.lostItem?.userId,
+          finderId: claim.foundItem?.userId,
+        },
+      });
+      console.log('Chat room created successfully');
+    } catch (chatError) {
+      console.error('Chat room creation error:', chatError.message);
+    }
+
     res.json({ message: 'Claim approved successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });

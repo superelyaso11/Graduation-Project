@@ -89,6 +89,16 @@ const NotificationBell = () => {
                   <div
                     key={n.id || i}
                     style={n.isRead ? s.item : { ...s.item, ...s.itemUnread }}
+                    onClick={() => {
+                      if (
+                        n.message.includes('message') ||
+                        n.message.includes('💬')
+                      ) {
+                        //if notification has chatRoomdId
+                        setOpen(false);
+                        window.location.href = '/chat'; //go to chat page
+                      }
+                    }}
                   >
                     <div style={s.itemIcon}>🔔</div>
                     <div style={s.itemContent}>

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import NotificationBell from './NotificationBell';
+import { useState } from 'react';
 
 const Navbar = ({ title, subtitle }) => {
   const { user, logout } = useAuth();
@@ -22,30 +23,37 @@ const Navbar = ({ title, subtitle }) => {
   };
 
   return (
-    <header style={s.topbar}>
-      <div>
-        <h1 style={s.pageTitle}>{title}</h1>
-        {subtitle && <p style={s.pageSubtitle}>{subtitle}</p>}
-      </div>
-
-      <div style={s.right}>
-        <NotificationBell /> {/* Real-time bell */}
-        <div style={s.avatar}>{getInitials(user?.name)}</div>
-        <div style={s.userInfo}>
-          <span style={s.userName}>{user?.name}</span>
-          <span style={s.roleBadge}>{user?.role}</span>
+    <>
+      <header style={s.topbar}>
+        <div>
+          <h1 style={s.pageTitle}>{title}</h1>
+          {subtitle && <p style={s.pageSubtitle}>{subtitle}</p>}
         </div>
-        <button
-          style={s.logoutBtn}
-          onClick={handleLogout}
-          onMouseEnter={(e) => (e.target.style.backgroundColor = '#334155')}
-          onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
-          title="Logout"
-        >
-          ⏻
-        </button>
-      </div>
-    </header>
+
+        <div style={s.right}>
+          <NotificationBell />
+
+          <div style={s.avatar}>{getInitials(user?.name)}</div>
+
+          <div style={s.userInfo}>
+            <span style={s.userName}>{user?.name}</span>
+            <span style={s.roleBadge}>{user?.role}</span>
+          </div>
+
+          <button
+            style={s.logoutBtn}
+            onClick={handleLogout}
+            onMouseEnter={(e) => (e.target.style.backgroundColor = '#334155')}
+            onMouseLeave={(e) =>
+              (e.target.style.backgroundColor = 'transparent')
+            }
+            title="Logout"
+          >
+            ⏻
+          </button>
+        </div>
+      </header>
+    </>
   );
 };
 

@@ -48,6 +48,7 @@ const Sidebar = () => {
       path: '/admin',
       roles: ['ADMIN'],
     },
+    { icon: '💬', label: 'Messages', path: '/chat', roles: ['STUDENT'] },
     {
       icon: '🔔',
       label: 'Notifications',

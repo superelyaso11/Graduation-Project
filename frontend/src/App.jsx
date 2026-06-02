@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
+import { useAuth } from './context/AuthContext';
 
 //pages
 import Login from './pages/Login';
@@ -12,8 +13,11 @@ import MyItems from './pages/MyItems';
 import Notifications from './pages/Notifications';
 import SecurityDashboard from './pages/SecurityDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import Chat from './pages/Chat';
+import ChatDrawer from './components/ChatDrawer';
 
 const App = () => {
+  const { user } = useAuth();
   return (
     <BrowserRouter>
       <Routes>
@@ -86,6 +90,23 @@ const App = () => {
         />
 
         <Route
+          path="/chat"
+          element={
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/chat/:roomId"
+          element={
+            <ProtectedRoute>
+              <Chat />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/notifications"
           element={
             <ProtectedRoute>
@@ -97,6 +118,8 @@ const App = () => {
         {/* Redirect root to login */}
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
+
+      {user && <ChatDrawer />}
     </BrowserRouter>
   );
 };

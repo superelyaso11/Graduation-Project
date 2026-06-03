@@ -1,7 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Bell,
+  CheckCircle2,
+  Search,
+  AlertCircle,
+  MessageSquare,
+  Clock,
+} from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
-import Navbar from '../components/Navbar';
 import { useSocket } from '../context/SocketContext';
 
 const ITEMS_PER_PAGE = 10;
@@ -11,6 +20,25 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1); //current page for pagination
   const { socket } = useSocket(); //listen for real-time events
+  const { isDark } = useTheme();
+
+  const bg = isDark ? '#050709' : '#EEF2F7';
+  const cardBg = isDark ? '#0C1118' : '#FFFFFF';
+  const heroBg = isDark ? '#0D1521' : '#FFFFFF';
+  const border = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.07)';
+  const rowBg = isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)';
+  const rowHover = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
+  const inputBg = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
+  const textPri = isDark ? '#F1F5F9' : '#0F172A';
+  const textMut = isDark ? '#64748B' : '#64748B';
+  const textSub = isDark ? '#475569' : '#94A3B8';
+  const cyan = isDark ? '#22D3EE' : '#0891B2';
+  const cyanBg = isDark ? 'rgba(34,211,238,0.1)' : 'rgba(8,145,178,0.1)';
+  const gridLine = isDark ? 'rgba(255,255,255,0.025)' : 'rgba(0,0,0,0.03)';
+  const btnGrad = isDark
+    ? 'linear-gradient(135deg,#22D3EE,#0EA5E9)'
+    : 'linear-gradient(135deg,#0891B2,#0369A1)';
+  const btnText = isDark ? '#050709' : '#fff';
 
   useEffect(() => {
     fetchNotifications();
@@ -84,209 +112,474 @@ const Notifications = () => {
   };
 
   const getIcon = (message) => {
-    if (message.includes('match')) return '🔍';
-    if (message.includes('approved')) return '✅';
-    if (message.includes('rejected')) return '❌';
-    if (message.includes('claim')) return '📋';
-    return '🔔';
+    if (message.includes('match'))
+      return { icon: Search, color: cyan, bg: cyanBg };
+    if (message.includes('approved'))
+      return {
+        icon: CheckCircle2,
+        color: '#10B981',
+        bg: 'rgba(16,185,129,0.12)',
+      };
+    if (message.includes('rejected'))
+      return {
+        icon: AlertCircle,
+        color: '#F43F5E',
+        bg: 'rgba(244,63,94,0.12)',
+      };
+    if (message.includes('💬') || message.includes('message'))
+      return {
+        icon: MessageSquare,
+        color: '#A78BFA',
+        bg: 'rgba(167,139,250,0.12)',
+      };
+    if (message.includes('expired'))
+      return { icon: Clock, color: '#64748B', bg: 'rgba(100,116,139,0.12)' };
+    return { icon: Bell, color: cyan, bg: cyanBg };
   };
 
   return (
-    <div style={s.layout}>
+    <div
+      style={{
+        display: 'flex',
+        height: '100vh',
+        overflow: 'hidden',
+        backgroundColor: bg,
+        fontFamily: "'Plus Jakarta Sans','Inter',sans-serif",
+        transition: 'background-color 0.3s',
+      }}
+    >
       <Sidebar />
-      <main style={s.main}>
-        <Navbar
-          title="Notifications"
-          subtitle="Stay updated on your items and claims"
-        />
 
-        <div style={s.content}>
-          {loading && <p style={s.empty}>Loading notifications...</p>}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+        }}
+      >
+        <main style={{ flex: 1, overflowY: 'auto', padding: '1.5rem' }}>
+          {/* Hero */}
+          <motion.div
+            style={{
+              position: 'relative',
+              borderRadius: 16,
+              overflow: 'hidden',
+              backgroundColor: heroBg,
+              border: `1px solid ${border}`,
+              minHeight: 110,
+              transition: 'background-color 0.3s',
+              marginBottom: '1.25rem',
+            }}
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                backgroundImage: `linear-gradient(${gridLine} 1px,transparent 1px),linear-gradient(90deg,${gridLine} 1px,transparent 1px)`,
+                backgroundSize: '32px 32px',
+              }}
+            />
+            <motion.div
+              style={{
+                position: 'absolute',
+                top: '-40%',
+                right: '8%',
+                width: 260,
+                height: 260,
+                background: `radial-gradient(circle,${isDark ? 'rgba(34,211,238,0.07)' : 'rgba(8,145,178,0.06)'} 0%,transparent 70%)`,
+                filter: 'blur(40px)',
+                borderRadius: '50%',
+                pointerEvents: 'none',
+              }}
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 7, repeat: Infinity }}
+            />
+            <div
+              style={{
+                position: 'relative',
+                zIndex: 1,
+                padding: '1.5rem 2rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    marginBottom: 4,
+                  }}
+                >
+                  <Bell size={13} style={{ color: cyan }} />
+                  <span
+                    style={{
+                      color: cyan,
+                      fontSize: 11,
+                      fontWeight: 700,
+                      letterSpacing: '0.07em',
+                    }}
+                  >
+                    NOTIFICATIONS
+                  </span>
+                </div>
+                <h1
+                  style={{
+                    color: textPri,
+                    fontSize: 24,
+                    fontWeight: 800,
+                    letterSpacing: '-0.025em',
+                    margin: 0,
+                  }}
+                >
+                  Your Updates
+                </h1>
+                <p style={{ color: textMut, fontSize: 13, marginTop: 4 }}>
+                  Stay on top of matches, claims and messages
+                </p>
+              </div>
+              {notifications.length > 0 && (
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    padding: '0.5rem 1rem',
+                    borderRadius: 10,
+                    backgroundColor: cyanBg,
+                    border: `1px solid ${cyan}30`,
+                  }}
+                >
+                  <Bell size={14} style={{ color: cyan }} />
+                  <span style={{ color: cyan, fontSize: 13, fontWeight: 700 }}>
+                    {notifications.length} total
+                  </span>
+                </div>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Content */}
+          {loading && (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.75rem',
+              }}
+            >
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  style={{
+                    borderRadius: 16,
+                    padding: '1.25rem',
+                    backgroundColor: cardBg,
+                    border: `1px solid ${border}`,
+                    display: 'flex',
+                    gap: '1rem',
+                    alignItems: 'center',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 12,
+                      backgroundColor: rowBg,
+                      flexShrink: 0,
+                    }}
+                  />
+                  <div
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 8,
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: 14,
+                        borderRadius: 6,
+                        backgroundColor: rowBg,
+                        width: '60%',
+                      }}
+                    />
+                    <div
+                      style={{
+                        height: 12,
+                        borderRadius: 6,
+                        backgroundColor: rowBg,
+                        width: '40%',
+                      }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {!loading && notifications.length === 0 && (
-            <div style={s.emptyState}>
-              <p style={s.emptyIcon}>🔔</p>
-              <p style={s.emptyText}>No notifications yet</p>
-              <p style={s.emptySubtext}>
-                You'll be notified when a match is found or a claim is updated
+            <motion.div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '5rem 0',
+                borderRadius: 20,
+                backgroundColor: cardBg,
+                border: `1px solid ${border}`,
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+              >
+                <Bell size={48} style={{ color: textMut, marginBottom: 16 }} />
+              </motion.div>
+              <div
+                style={{
+                  color: textPri,
+                  fontSize: 16,
+                  fontWeight: 700,
+                  marginTop: 16,
+                }}
+              >
+                All caught up
+              </div>
+              <p style={{ color: textMut, fontSize: 14, marginTop: 4 }}>
+                You'll be notified when matches, claims or messages arrive
               </p>
-            </div>
+            </motion.div>
           )}
 
           {!loading && notifications.length > 0 && (
             <>
-              {/* Count and page info */}
-              <div style={s.pageInfo}>
-                <p style={s.countText}>
-                  {notifications.length} notification
-                  {notifications.length !== 1 ? 's' : ''}
-                </p>
-                <p style={s.pageText}>
-                  Page {currentPage} of {totalPages}
-                </p>
-              </div>
-
-              {/* Notifications list */}
-              <div style={s.list}>
-                {currentNotifications.map((n, i) => (
-                  <div key={n.id || i} style={s.card}>
-                    <div style={s.iconWrap}>
-                      <span style={s.icon}>{getIcon(n.message)}</span>
-                    </div>
-                    <div style={s.info}>
-                      <p style={s.message}>{n.message}</p>
-                      <p style={s.time}>{formatTime(n.createdAt)}</p>
-                    </div>
-                    {!n.isRead && <div style={s.unreadDot} />}
-                  </div>
-                ))}
-              </div>
-
-              {/* Pagination controls */}
+              {/* Page info */}
               {totalPages > 1 && (
-                <div style={s.pagination}>
-                  {/* Previous button */}
-                  <button
-                    style={
-                      currentPage === 1
-                        ? { ...s.pageBtn, ...s.pageBtnDisabled }
-                        : s.pageBtn
-                    }
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  <span style={{ color: textMut, fontSize: 13 }}>
+                    {notifications.length} notification
+                    {notifications.length !== 1 ? 's' : ''}
+                  </span>
+                  <span style={{ color: textMut, fontSize: 13 }}>
+                    Page {currentPage} of {totalPages}
+                  </span>
+                </div>
+              )}
+
+              {/* Notification list */}
+              <motion.div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.625rem',
+                }}
+                initial="hidden"
+                animate="show"
+                variants={{
+                  hidden: {},
+                  show: { transition: { staggerChildren: 0.05 } },
+                }}
+              >
+                <AnimatePresence>
+                  {currentNotifications.map((n, i) => {
+                    const {
+                      icon: Icon,
+                      color,
+                      bg: iconBg,
+                    } = getIcon(n.message);
+                    return (
+                      <motion.div
+                        key={n.id || i}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1rem',
+                          padding: '1rem 1.25rem',
+                          borderRadius: 16,
+                          backgroundColor: n.isRead
+                            ? rowBg
+                            : isDark
+                              ? 'rgba(34,211,238,0.04)'
+                              : 'rgba(8,145,178,0.04)',
+                          border: `1px solid ${n.isRead ? border : `${cyan}20`}`,
+                          cursor: 'default',
+                          transition: 'background-color 0.2s',
+                        }}
+                        variants={{
+                          hidden: { opacity: 0, y: 8 },
+                          show: {
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                              duration: 0.3,
+                              ease: [0.22, 1, 0.36, 1],
+                            },
+                          },
+                        }}
+                        whileHover={{ backgroundColor: rowHover }}
+                      >
+                        <div
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 12,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: iconBg,
+                            flexShrink: 0,
+                          }}
+                        >
+                          <Icon size={16} style={{ color }} />
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p
+                            style={{
+                              color: textPri,
+                              fontSize: '0.875rem',
+                              fontWeight: n.isRead ? 500 : 600,
+                              margin: '0 0 0.25rem',
+                              lineHeight: 1.4,
+                            }}
+                          >
+                            {n.message}
+                          </p>
+                          <p
+                            style={{
+                              color: textMut,
+                              fontSize: '0.75rem',
+                              margin: 0,
+                            }}
+                          >
+                            {formatTime(n.createdAt)}
+                          </p>
+                        </div>
+                        {!n.isRead && (
+                          <motion.div
+                            style={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              backgroundColor: cyan,
+                              flexShrink: 0,
+                            }}
+                            animate={{ opacity: [1, 0.4, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          />
+                        )}
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </motion.div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    marginTop: '1.5rem',
+                    flexWrap: 'wrap',
+                  }}
+                >
+                  <motion.button
+                    style={{
+                      padding: '0.5rem 0.875rem',
+                      borderRadius: 10,
+                      backgroundColor: cardBg,
+                      border: `1px solid ${border}`,
+                      color: textMut,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                      opacity: currentPage === 1 ? 0.4 : 1,
+                      fontFamily: 'inherit',
+                    }}
                     onClick={() => goToPage(currentPage - 1)}
                     disabled={currentPage === 1}
+                    whileTap={currentPage !== 1 ? { scale: 0.97 } : {}}
                   >
                     ← Prev
-                  </button>
+                  </motion.button>
 
-                  {/* Page number buttons */}
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                     (page) => (
-                      <button
+                      <motion.button
                         key={page}
-                        style={
-                          page === currentPage
-                            ? { ...s.pageBtn, ...s.pageBtnActive } // highlight current page
-                            : s.pageBtn
-                        }
+                        style={{
+                          padding: '0.5rem 0.875rem',
+                          borderRadius: 10,
+                          backgroundColor: page === currentPage ? cyan : cardBg,
+                          border: `1px solid ${page === currentPage ? cyan : border}`,
+                          color: page === currentPage ? btnText : textMut,
+                          fontSize: 13,
+                          fontWeight: page === currentPage ? 700 : 500,
+                          cursor: 'pointer',
+                          fontFamily: 'inherit',
+                        }}
                         onClick={() => goToPage(page)}
+                        whileHover={{ scale: 1.04 }}
+                        whileTap={{ scale: 0.97 }}
                       >
                         {page}
-                      </button>
+                      </motion.button>
                     )
                   )}
 
-                  {/* Next button */}
-                  <button
-                    style={
-                      currentPage === totalPages
-                        ? { ...s.pageBtn, ...s.pageBtnDisabled }
-                        : s.pageBtn
-                    }
+                  <motion.button
+                    style={{
+                      padding: '0.5rem 0.875rem',
+                      borderRadius: 10,
+                      backgroundColor: cardBg,
+                      border: `1px solid ${border}`,
+                      color: textMut,
+                      fontSize: 13,
+                      fontWeight: 500,
+                      cursor:
+                        currentPage === totalPages ? 'not-allowed' : 'pointer',
+                      opacity: currentPage === totalPages ? 0.4 : 1,
+                      fontFamily: 'inherit',
+                    }}
                     onClick={() => goToPage(currentPage + 1)}
                     disabled={currentPage === totalPages}
+                    whileTap={currentPage !== totalPages ? { scale: 0.97 } : {}}
                   >
                     Next →
-                  </button>
+                  </motion.button>
                 </div>
               )}
             </>
           )}
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
-};
-
-const s = {
-  layout: { display: 'flex', minHeight: '100vh', backgroundColor: '#0F172A' },
-  main: { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'auto' },
-  content: { padding: '2rem', maxWidth: '700px', width: '100%' },
-  empty: { color: '#94A3B8', textAlign: 'center', padding: '3rem' },
-  emptyState: { textAlign: 'center', padding: '4rem 2rem' },
-  emptyIcon: { fontSize: '3rem', marginBottom: '1rem' },
-  emptyText: {
-    fontSize: '1.1rem',
-    fontWeight: '600',
-    color: '#F8FAFC',
-    marginBottom: '0.5rem',
-  },
-  emptySubtext: { fontSize: '0.875rem', color: '#94A3B8' },
-  pageInfo: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '1rem',
-  },
-  countText: { fontSize: '0.875rem', color: '#94A3B8' },
-  pageText: { fontSize: '0.875rem', color: '#94A3B8' },
-  list: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '0.75rem',
-    marginBottom: '1.5rem',
-  },
-  card: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-    backgroundColor: '#1E293B',
-    border: '1px solid #334155',
-    borderRadius: '12px',
-    padding: '1rem 1.25rem',
-  },
-  iconWrap: {
-    width: '42px',
-    height: '42px',
-    backgroundColor: '#1E3A5F',
-    borderRadius: '10px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexShrink: 0,
-  },
-  icon: { fontSize: '1.1rem' },
-  info: { flex: 1 },
-  message: {
-    fontSize: '0.9rem',
-    color: '#F8FAFC',
-    fontWeight: '500',
-    marginBottom: '0.25rem',
-    lineHeight: '1.4',
-  },
-  time: { fontSize: '0.775rem', color: '#94A3B8' },
-  unreadDot: {
-    width: '8px',
-    height: '8px',
-    backgroundColor: '#2563EB',
-    borderRadius: '50%',
-    flexShrink: 0,
-  },
-  pagination: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: '0.5rem',
-    marginTop: '1rem',
-    flexWrap: 'wrap',
-  },
-  pageBtn: {
-    backgroundColor: '#1E293B',
-    border: '1px solid #334155',
-    color: '#F8FAFC',
-    borderRadius: '8px',
-    padding: '0.5rem 0.875rem',
-    fontSize: '0.875rem',
-    fontWeight: '500',
-    cursor: 'pointer',
-    fontFamily: 'Sora, sans-serif',
-    transition: 'all 0.2s',
-  },
-  pageBtnActive: {
-    backgroundColor: '#2563EB',
-    border: '1px solid #2563EB',
-    color: 'white',
-  },
-  pageBtnDisabled: { opacity: 0.4, cursor: 'not-allowed' },
 };
 
 export default Notifications;

@@ -4,13 +4,20 @@ import App from './App.jsx';
 import './index.css';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { SocketProvider } from './context/SocketContext.jsx';
+import { ThemeProvider } from './context/ThemeContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider> {/* auth must wrap socket */}
-        <SocketProvider> {/* socket needs user from auth*/}
-            <App />
+    <ThemeProvider>
+      <AuthProvider>
+        {' '}
+        {/* auth must wrap socket */}
+        <SocketProvider>
+          {' '}
+          {/* socket needs user from auth*/}
+          <App />
         </SocketProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </React.StrictMode>
 );

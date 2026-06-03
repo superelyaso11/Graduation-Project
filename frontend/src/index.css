@@ -1,23 +1,5 @@
-/* Import Sora font — modern, clean, perfect for a university app */
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap');
-
-/* CSS Variables — single source of truth for all colors */
-:root {
-  --bg-primary: #0f172a; /* dark navy background */
-  --bg-secondary: #1e293b; /* card background */
-  --bg-tertiary: #0d1b2e; /* input background */
-  --blue-primary: #2563eb; /* main brand blue */
-  --blue-hover: #1d4ed8; /* darker blue on hover */
-  --blue-subtle: #1e3a5f; /* subtle blue for icons bg */
-  --text-primary: #f8fafc; /* main white text */
-  --text-secondary: #94a3b8; /* muted gray text */
-  --border-color: #334155; /* subtle border */
-  --success: #10b981; /* green for positive stats */
-  --error: #ef4444; /* red for errors */
-  --border-radius-card: 16px; /* card border radius */
-  --border-radius-input: 10px; /* input border radius */
-  --border-radius-btn: 10px; /* button border radius */
-}
+/* Import Plus Jakarta Sans font — modern, clean, perfect for a university app */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 /* Reset */
 * {
@@ -27,7 +9,7 @@
 }
 
 body {
-  font-family: 'Sora', sans-serif; /* apply font globally */
+  font-family: 'Plus Jakarta Sans', sans-serif; /* apply font globally */
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
@@ -38,11 +20,15 @@ body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
+}
+
+input [type='date'] {
+  cursor: pointer;
 }
 
 /* Make calendar icon cover full input so clicking anywhere opens calendar */

@@ -312,7 +312,7 @@ router.patch('/:id/confirm-end', protect, async (req, res) => {
     socketService.notifyUser(chatRoom.finderId, 'chat_ended', { chatRoomId });
 
     res.json({ message: 'Chat ended successfully' });
-  } catch {
+  } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });

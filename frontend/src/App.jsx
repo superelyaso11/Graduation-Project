@@ -16,6 +16,22 @@ import AdminDashboard from './pages/AdminDashboard';
 import Chat from './pages/Chat';
 import ChatDrawer from './components/ChatDrawer';
 
+const AppLayout = ({ children }) => {
+  const { user } = useAuth();
+  const location = useLocation();
+
+  // pages where chat drawer should NOT appear
+  const hiddenOn = ['/login', '/register', '/chat'];
+  const showDrawer = user && !hiddenOn.includes(location.pathname);
+
+  return (
+    <>
+      {children}
+      {showDrawer && <ChatDrawer />}
+    </>
+  );
+};
+
 const App = () => {
   const { user } = useAuth();
   return (

@@ -41,7 +41,6 @@ const Dashboard = () => {
   const bg = isDark ? '#050709' : '#EEF2F7';
   const cardBg = isDark ? '#0C1118' : '#FFFFFF';
   const border = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.07)';
-  const inputBg = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
   const textPri = isDark ? '#F1F5F9' : '#0F172A';
   const textMut = isDark ? '#64748B' : '#64748B';
   const textSub = isDark ? '#334155' : '#94A3B8';
@@ -143,15 +142,6 @@ const Dashboard = () => {
       bg: isDark ? 'rgba(34,211,238,0.08)' : 'rgba(8,145,178,0.08)',
     },
   ];
-
-  const getNotificationIcon = (message) => {
-    if (message.includes('match')) return '🔍';
-    if (message.includes('approved')) return '✅';
-    if (message.includes('rejected')) return '❌';
-    if (message.includes('claim')) return '📋';
-    if (message.includes('expired')) return '⏰';
-    return '🔔';
-  };
 
   return (
     <div

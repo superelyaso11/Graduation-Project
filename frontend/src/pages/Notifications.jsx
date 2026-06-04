@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bell,
@@ -28,20 +28,16 @@ const Notifications = () => {
   const border = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.07)';
   const rowBg = isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)';
   const rowHover = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
-  const inputBg = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
   const textPri = isDark ? '#F1F5F9' : '#0F172A';
   const textMut = isDark ? '#64748B' : '#64748B';
-  const textSub = isDark ? '#475569' : '#94A3B8';
   const cyan = isDark ? '#22D3EE' : '#0891B2';
   const cyanBg = isDark ? 'rgba(34,211,238,0.1)' : 'rgba(8,145,178,0.1)';
   const gridLine = isDark ? 'rgba(255,255,255,0.025)' : 'rgba(0,0,0,0.03)';
-  const btnGrad = isDark
-    ? 'linear-gradient(135deg,#22D3EE,#0EA5E9)'
-    : 'linear-gradient(135deg,#0891B2,#0369A1)';
   const btnText = isDark ? '#050709' : '#fff';
 
   useEffect(() => {
     fetchNotifications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //listen for real-time notifications

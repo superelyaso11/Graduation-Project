@@ -70,7 +70,7 @@ const StatusBadge = ({ status }) => {
 };
 
 const MyItems = () => {
-  const { user, refreshUser } = useAuth();
+  const { refreshUser } = useAuth();
   const { isDark } = useTheme();
   const { socket } = useSocket();
 

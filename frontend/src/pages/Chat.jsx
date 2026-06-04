@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Send, X, ArrowLeft, ExternalLink } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -11,7 +11,6 @@ import ReputationBadge from '../components/ReputationBadge';
 
 const Chat = () => {
   const { roomId } = useParams(); //if coming from notification
-  const navigate = useNavigate();
   const { user } = useAuth();
   const { socket } = useSocket();
   const { isDark } = useTheme();
@@ -30,7 +29,6 @@ const Chat = () => {
   const inputBg = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
   const textPri = isDark ? '#F1F5F9' : '#0F172A';
   const textMut = isDark ? '#64748B' : '#64748B';
-  const textSub = isDark ? '#334155' : '#94A3B8';
   const cyan = isDark ? '#22D3EE' : '#0891B2';
   const cyanBg = isDark ? 'rgba(34,211,238,0.1)' : 'rgba(8,145,178,0.1)';
   const btnGrad = isDark
@@ -57,6 +55,7 @@ const Chat = () => {
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
 
   useEffect(() => {

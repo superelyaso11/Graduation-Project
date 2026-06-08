@@ -230,7 +230,7 @@ const Chat = () => {
 
     if (date.toDateString() === today.toDateString()) return 'Today';
     if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
-    return Date.toLocalDateString('en-GB', { day: 'numeric', month: 'short' });
+    return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
   };
 
   //group messages by date

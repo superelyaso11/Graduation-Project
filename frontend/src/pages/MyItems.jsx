@@ -188,7 +188,7 @@ const MyItems = () => {
         prev.map((c) => (c.id === claimId ? { ...c, status: 'APPROVED' } : c))
       );
       await refreshUser();
-      flash('Claim approved! Item marked as resolved.');
+      flash('Claim approved! Item marked as approved.');
     } catch (err) {
       console.error('Failed to approve claim', err);
     }

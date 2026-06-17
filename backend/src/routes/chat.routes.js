@@ -8,7 +8,7 @@ const router = express.Router();
 
 //POST /api/chat/create/:claimId - create a chat room when claim is approved
 router.post('/create/:claimId', protect, async (req, res) => {
-  const claimId = parseInt(req.prisma.claimId);
+  const claimId = parseInt(req.params.claimId);
 
   try {
     //check if chat room already exists for this claim

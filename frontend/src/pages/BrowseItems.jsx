@@ -15,6 +15,7 @@ import { useSocket } from '../context/SocketContext';
 import api from '../api/axios';
 import Sidebar from '../components/Sidebar';
 import ReputationBadge from '../components/ReputationBadge';
+import LocationDropdown from '../components/LocationDropdown';
 
 const CATEGORIES = [
   { value: '', label: 'All', emoji: '✨' },
@@ -766,7 +767,7 @@ const BrowseItems = () => {
                   gap: '1rem',
                 }}
               >
-                {/* Styled Native Location Input */}
+                {/* Location */}
                 <div
                   style={{ display: 'flex', flexDirection: 'column', gap: 6 }}
                 >
@@ -780,24 +781,12 @@ const BrowseItems = () => {
                   >
                     WHERE DID YOU FIND IT?
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Engineering Building A, Main Library..."
+                  <LocationDropdown
                     value={modalData.location}
-                    onChange={(e) =>
-                      setModalData((p) => ({ ...p, location: e.target.value }))
+                    onChange={(loc) =>
+                      setModalData((p) => ({ ...p, location: loc }))
                     }
-                    style={{
-                      width: '100%',
-                      padding: '0.75rem 1rem',
-                      borderRadius: 12,
-                      outline: 'none',
-                      boxSizing: 'border-box',
-                      fontFamily: 'inherit',
-                      ...inputStyle,
-                    }}
-                    onFocus={focusIn}
-                    onBlur={focusOut}
+                    placeholder="Search for a location..."
                   />
                 </div>
 

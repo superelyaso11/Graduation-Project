@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 
 const LOCATIONS = [
+  'All Campus / Not Sure',
+
   //ground floor
   ...Array.from({ length: 51 }, (_, i) => `Z${i}`), //Z0 to Z50
 

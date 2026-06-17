@@ -309,7 +309,7 @@ const BrowseItems = () => {
               )}
             </AnimatePresence>
 
-            {/* Figma Category Pills Navigation */}
+            {/* Category Pills Navigation */}
             <motion.div
               style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}
               initial={{ opacity: 0, y: 8 }}
@@ -822,18 +822,22 @@ const BrowseItems = () => {
                     onChange={(e) =>
                       setModalData((p) => ({ ...p, dateFound: e.target.value }))
                     }
+                    onClick={(e) => {
+                      if (typeof e.target.showPicker === 'function') {
+                        e.target.showPicker();
+                      }
+                    }}
                     style={{
                       width: '100%',
+                      maxWidth: '100%',
+                      boxSizing: 'border-box',
                       padding: '0.75rem 1rem',
                       borderRadius: 12,
                       outline: 'none',
-                      boxSizing: 'border-box',
-                      fontFamily: 'inherit',
                       colorScheme: isDark ? 'dark' : 'light',
+                      cursor: 'pointer',
                       ...inputStyle,
                     }}
-                    onFocus={focusIn}
-                    onBlur={focusOut}
                   />
                 </div>
 
